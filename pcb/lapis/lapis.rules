@@ -1,0 +1,116 @@
+
+(rules PCB lapis
+  (snap_angle 
+    fortyfive_degree
+  )
+  (autoroute_settings
+    (fanout off)
+    (eu.mihosoft.freerouting.autoroute on)
+    (postroute on)
+    (vias on)
+    (via_costs 50)
+    (plane_via_costs 5)
+    (start_ripup_costs 100)
+    (start_pass_no 11)
+    (layer_rule F.Cu
+      (active on)
+      (preferred_direction vertical)
+      (preferred_direction_trace_costs 1.0)
+      (against_preferred_direction_trace_costs 2.3)
+    )
+    (layer_rule B.Cu
+      (active on)
+      (preferred_direction horizontal)
+      (preferred_direction_trace_costs 1.0)
+      (against_preferred_direction_trace_costs 1.8)
+    )
+  )
+  (rule
+    (width 250.0)
+    (clear 200.2)
+    (clear 125.0 (type smd_to_turn_gap))
+    (clear 50.0 (type smd_smd))
+  )
+  (padstack "Via[0-1]_800:400_um"
+    (shape
+      (circle F.Cu 800.0 0.0 0.0)
+    )
+    (shape
+      (circle B.Cu 800.0 0.0 0.0)
+    )
+    (attach off)
+  )
+  (via 
+    "Via[0-1]_800:400_um" "Via[0-1]_800:400_um" default
+  )
+  (via 
+    "Via[0-1]_800:400_um-kicad_default" "Via[0-1]_800:400_um" "kicad_default"
+  )
+  (via 
+    "Via[0-1]_800:400_um-BATT" "Via[0-1]_800:400_um" BATT
+  )
+  (via 
+    "Via[0-1]_800:400_um-POWER" "Via[0-1]_800:400_um" POWER
+  )
+  (via_rule
+    default "Via[0-1]_800:400_um"
+  )
+  (via_rule
+    "kicad_default" "Via[0-1]_800:400_um-kicad_default"
+  )
+  (via_rule
+    BATT "Via[0-1]_800:400_um-BATT"
+  )
+  (via_rule
+    POWER "Via[0-1]_800:400_um-POWER"
+  )
+  (class default
+    (clearance_class default)
+    (via_rule default)
+    (rule
+      (width 250.0)
+    )
+    (circuit 
+      (use_layer F.Cu B.Cu)
+    )
+  )
+  (class "kicad_default"
+    "/MOTOR_ENCODER_R/ENC_CS" "/MOTOR_ENCODER_L/ENC_CS" GND +3V3 MR2 MR1 ML2 ML1
+    "Net-(C15-Pad1)" +3.3VA +1.65VA "Net-(C4-Pad1)" "Net-(D1-Pad1)" "Net-(D2-Pad1)" "Net-(D4-Pad1)" "Net-(D5-Pad1)"
+    "Net-(J3-Pad1)" "/WALL_SENSOR_RS/WALLSENSOR_ADC" "/WALL_SENSOR_RF/WALLSENSOR_ADC" "/WALL_SENSOR_LF/WALLSENSOR_ADC" "/WALL_SENSOR_LS/WALLSENSOR_ADC" "Net-(R1-Pad1)" "Net-(R10-Pad1)" "ENC_GND_"
+    "ENC_VCC_" "ENC_MOSI_" "ENC_MISO_" "ENC_SCK_" "ENC_CS_" "/CPU/ML_PWM" "/CPU/ML_EN" "/CPU/MR_PWM"
+    "/CPU/MR_EN" /CPU/SW "/CPU/LED_LSRF" "/CPU/LED_LFRS" /CPU/SPEAKER /CPU/TX /CPU/RX "/CPU/ENC_MOSI"
+    "/CPU/ENC_MISO" "Net-(C32-Pad1)" "/CPU/ENC_SCK" "/CPU/IMU_CS" "/CPU/IMU_MOSI" "/CPU/IMU_MISO" "/CPU/IMU_SCK" "Net-(C31-Pad1)"
+    /CPU/LED3 /CPU/LED2 /CPU/LED1 "/POWER/AD_BATT" "Net-(D3-Pad2)" "Net-(D6-Pad1)" "Net-(D7-Pad1)" "Net-(D8-Pad1)"
+    "Net-(D9-Pad1)" /CPU/LED0 "Net-(LS1-Pad2)" "Net-(Q5-Pad1)" "Net-(LS1-Pad1)"
+    (clearance_class "kicad_default")
+    (via_rule kicad_default)
+    (rule
+      (width 250.0)
+    )
+    (circuit 
+      (use_layer F.Cu B.Cu)
+    )
+  )
+  (class BATT
+    (clearance_class BATT)
+    (via_rule BATT)
+    (rule
+      (width 500.0)
+    )
+    (circuit 
+      (use_layer F.Cu B.Cu)
+    )
+  )
+  (class POWER
+    +BATT
+    (clearance_class POWER)
+    (via_rule POWER)
+    (rule
+      (width 500.0)
+    )
+    (circuit 
+      (use_layer F.Cu B.Cu)
+    )
+  )
+)

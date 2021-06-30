@@ -1,0 +1,172 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 4 14
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L power:+3.3V #PWR?
+U 1 1 5FB2C21E
+P 2300 1900
+F 0 "#PWR?" H 2300 1750 50  0001 C CNN
+F 1 "+3.3V" H 2315 2073 50  0000 C CNN
+F 2 "" H 2300 1900 50  0001 C CNN
+F 3 "" H 2300 1900 50  0001 C CNN
+	1    2300 1900
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3.3V #PWR?
+U 1 1 5FB2C641
+P 2700 1900
+F 0 "#PWR?" H 2700 1750 50  0001 C CNN
+F 1 "+3.3V" H 2715 2073 50  0000 C CNN
+F 2 "" H 2700 1900 50  0001 C CNN
+F 3 "" H 2700 1900 50  0001 C CNN
+	1    2700 1900
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FB2CA11
+P 2300 2400
+F 0 "#PWR?" H 2300 2150 50  0001 C CNN
+F 1 "GND" H 2305 2227 50  0000 C CNN
+F 2 "" H 2300 2400 50  0001 C CNN
+F 3 "" H 2300 2400 50  0001 C CNN
+	1    2300 2400
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FB2CEB0
+P 2700 2400
+F 0 "#PWR?" H 2700 2150 50  0001 C CNN
+F 1 "GND" H 2705 2227 50  0000 C CNN
+F 2 "" H 2700 2400 50  0001 C CNN
+F 3 "" H 2700 2400 50  0001 C CNN
+	1    2700 2400
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FB2CFC3
+P 7800 4700
+F 0 "#PWR?" H 7800 4450 50  0001 C CNN
+F 1 "GND" H 7805 4527 50  0000 C CNN
+F 2 "" H 7800 4700 50  0001 C CNN
+F 3 "" H 7800 4700 50  0001 C CNN
+	1    7800 4700
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FB2D1B4
+P 4150 5150
+F 0 "#PWR?" H 4150 4900 50  0001 C CNN
+F 1 "GND" H 4155 4977 50  0000 C CNN
+F 2 "" H 4150 5150 50  0001 C CNN
+F 3 "" H 4150 5150 50  0001 C CNN
+	1    4150 5150
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 5FB2D4ED
+P 2300 2150
+F 0 "C?" H 2415 2196 50  0000 L CNN
+F 1 "0.1u" H 2415 2105 50  0000 L CNN
+F 2 "" H 2338 2000 50  0001 C CNN
+F 3 "~" H 2300 2150 50  0001 C CNN
+	1    2300 2150
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 5FB2DA0A
+P 2700 2150
+F 0 "C?" H 2815 2196 50  0000 L CNN
+F 1 "0.01u" H 2815 2105 50  0000 L CNN
+F 2 "" H 2738 2000 50  0001 C CNN
+F 3 "~" H 2700 2150 50  0001 C CNN
+	1    2700 2150
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2300 1900 2300 2000
+Wire Wire Line
+	2300 2300 2300 2400
+Wire Wire Line
+	2700 1900 2700 2000
+Wire Wire Line
+	2700 2300 2700 2400
+$Comp
+L Device:C C?
+U 1 1 5FB33785
+P 5550 5450
+F 0 "C?" H 5665 5496 50  0000 L CNN
+F 1 "0.1u" H 5665 5405 50  0000 L CNN
+F 2 "" H 5588 5300 50  0001 C CNN
+F 3 "~" H 5550 5450 50  0001 C CNN
+	1    5550 5450
+	1    0    0    -1  
+$EndComp
+Text HLabel 7150 3700 0    50   Output ~ 0
+IMU_MISO
+Text HLabel 7150 4000 0    50   Input ~ 0
+IMU_CS
+Text HLabel 7150 3900 0    50   Input ~ 0
+IMU_SCLK
+Text HLabel 7150 3800 0    50   Input ~ 0
+IMU_MOSI
+$Comp
+L Sensor_Motion:ICM-20602 U?
+U 1 1 5FB362FC
+P 7800 3800
+F 0 "U?" H 7450 4350 50  0000 C CNN
+F 1 "ICM-20602" H 7450 4250 50  0000 C CNN
+F 2 "Package_LGA:LGA-16_3x3mm_P0.5mm_LayoutBorder3x5y" H 7800 4050 50  0001 C CNN
+F 3 "http://www.invensense.com/wp-content/uploads/2016/10/DS-000176-ICM-20602-v1.0.pdf" H 7850 4750 50  0001 C CNN
+	1    7800 3800
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3.3V #PWR?
+U 1 1 5FB30AF1
+P 7800 3000
+F 0 "#PWR?" H 7800 2850 50  0001 C CNN
+F 1 "+3.3V" H 7815 3173 50  0000 C CNN
+F 2 "" H 7800 3000 50  0001 C CNN
+F 3 "" H 7800 3000 50  0001 C CNN
+	1    7800 3000
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7800 3000 7800 3150
+Wire Wire Line
+	7800 3150 7900 3150
+Wire Wire Line
+	7900 3150 7900 3300
+Connection ~ 7800 3150
+Wire Wire Line
+	7800 3150 7800 3300
+Wire Wire Line
+	7800 4300 7800 4700
+Wire Wire Line
+	7150 3700 7300 3700
+Wire Wire Line
+	7300 3800 7150 3800
+Wire Wire Line
+	7300 3900 7150 3900
+Wire Wire Line
+	7300 4000 7150 4000
+$EndSCHEMATC
