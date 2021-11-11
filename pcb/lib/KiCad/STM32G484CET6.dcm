@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP STM32G484CET6
+D MCU, 32BIT, 170MHZ, LQFP-48
+K
+F 
+$ENDCMP
+#
+#End Doc Library

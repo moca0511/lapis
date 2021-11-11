@@ -5,17 +5,17 @@
  *      Author: junmo
  */
 
-#include"battery.h"
 #include"adc.h"
-#include"buzzer.h"
+#include"UI.h"
+#include"battery.h"
 float readBattery(void) {
 	/* USER CODE BEGIN BatteryCheck */
 	/* Infinite loop */
 	float batt_level = 0;
 	static int8_t count = 0;
 
-	batt_level = get_adc(BATT) * 2;
-	batt_level = (batt_level / (ADC_MAX / 3.3)) ;
+	batt_level = get_adc(BATT) * 2.0f;
+	batt_level = (batt_level / (ADC_MAX / 3.3f)) ;
 
 	if (batt_level <= BATT_WARNING) { //warning
 		count++;

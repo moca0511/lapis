@@ -34,7 +34,6 @@ extern "C" {
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
 #include "uart.h"
-#include "error.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -49,7 +48,7 @@ extern "C" {
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
-#define	PI            3.14159265358979		//å†?å‘¨çŽ?
+#define	PI            3.14159265358979		//?¿½?å‘¨?¿½?
 /* USER CODE END EM */
 
 void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);

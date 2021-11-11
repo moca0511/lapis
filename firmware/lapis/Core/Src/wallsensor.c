@@ -8,7 +8,6 @@
 #include "wallsensor.h"
 #include "timer.h"
 #include "adc.h"
-#include "buzzer.h"
 #include "UI.h"
 
 extern ADC_HandleTypeDef hadc1;
@@ -40,47 +39,47 @@ uint32_t wallSensorRead(uint8_t select) {
 	int32_t dataBuf=0;
 	HAL_GPIO_WritePin(LED_LSRF_GPIO_Port,LED_LSRF_Pin, RESET);
 	HAL_GPIO_WritePin(LED_LFRS_GPIO_Port,LED_LFRS_Pin, RESET);
-	Delay_us(20);
+	Delay_us(30);
 	switch (select) {
 	case RS:
 		dataBuf = get_adc(RS);
 		HAL_GPIO_WritePin(LED_LFRS_GPIO_Port,LED_LFRS_Pin, SET);
-		//wait20us
-		Delay_us(20);
+		//wait30us
+		Delay_us(30);
 
 //Sensor RS read
-		dataBuf = (int32_t) get_adc(RS) - dataBuf;
+		dataBuf = get_adc(RS);
 		HAL_GPIO_WritePin(LED_LFRS_GPIO_Port,LED_LFRS_Pin, RESET);
 		break;
 	case RF:
 		dataBuf = get_adc(RF);
 		HAL_GPIO_WritePin(LED_LSRF_GPIO_Port,LED_LSRF_Pin, SET);
-		//wait20us
-		Delay_us(20);
+		//wait30us
+		Delay_us(30);
 
 		//Sensor RS read
-		dataBuf = (int32_t) get_adc(RF) -dataBuf;
+		dataBuf = get_adc(RF);
 		HAL_GPIO_WritePin(LED_LSRF_GPIO_Port,LED_LSRF_Pin, RESET);
 		break;
 	case LF:
 		dataBuf = get_adc(LF);
 		//LED_RS on
 		HAL_GPIO_WritePin(LED_LFRS_GPIO_Port,LED_LFRS_Pin, SET);
-		//wait20us
-		Delay_us(20);
+		//wait30us
+		Delay_us(30);
 
 		//Sensor RS read
-		dataBuf = (int32_t) get_adc(LF) -dataBuf;
+		dataBuf = get_adc(LF);
 		HAL_GPIO_WritePin(LED_LFRS_GPIO_Port,LED_LFRS_Pin, RESET);
 		break;
 	case LS:
 		dataBuf = get_adc(LS);
 		HAL_GPIO_WritePin(LED_LSRF_GPIO_Port,LED_LSRF_Pin, SET);
-		//wait20us
-		Delay_us(20);
+		//wait30us
+		Delay_us(30);
 
 		//Sensor RS read
-		dataBuf = (int32_t) get_adc(LS) - dataBuf;
+		dataBuf = get_adc(LS);
 		HAL_GPIO_WritePin(LED_LSRF_GPIO_Port,LED_LSRF_Pin, RESET);
 		break;
 	default:

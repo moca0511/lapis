@@ -12,7 +12,7 @@
 
 #define ADC_CHANNEL_BATTERY ADC_CHANNEL_4
 
-#define BATT_WARNING 3.6
+#define BATT_WARNING 3.5
 #define BATT_NORMAL 3.7
 #define BATT_FULL 4.2
 

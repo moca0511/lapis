@@ -50,5 +50,6 @@ uint8_t icm20602_get_gyro_adc(int16_t *gyro);
 uint8_t icm20602_get_gyro(float *gyro);
 uint8_t icm20602_get_accel(float *accel);
 float icm20602_get_temp(void);
-
+void icm20602_get_deg(float *degree,float gyro,float gyro_prev,float t);
+void icm20602_get_gyro_drift(void);
 #endif
