@@ -58,11 +58,11 @@ typedef struct
 #define SPEED_KP (5.0f)
 #define SPEED_KI (0.01f)
 #define SPEED_KD (0.3f)
-#define ANG_KP (0.2f)
-#define ANG_KI (0.0005f)
+#define ANG_KP (0.3f)
+#define ANG_KI (0.0015f)
 #define ANG_KD (0.04f)
-#define CON_WALL_KP (0.0006f)
-#define CON_FWALL_KP (0.01f)
+#define CON_WALL_KP (0.0004f)
+#define CON_FWALL_KP (0.003f)
 
 //typedef enum {
 //	RS_WALL,

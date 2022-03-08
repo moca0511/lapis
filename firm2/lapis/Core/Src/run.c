@@ -34,7 +34,7 @@ float move_y(float degree, float speed) {
 }
 
 float get_fusioned_speed(float speed, float accel, float speed_prev, float tick) {
-	const float alpha = 0.6f;
+	const float alpha = 0.3f;
 	return alpha * (speed_prev + tick * accel) + (1.0f - alpha) * speed;
 }
 
@@ -58,6 +58,7 @@ void straight(RUNConfig config) {
 	speed_p_prev = 0;
 	speed_i = 0;
 	speed_d = 0;
+	tar_degree = 0;
 	tar_accel = config.acceleration;
 	max_tar_speed = config.max_speed;
 	max_tar_ang = 0;
@@ -66,7 +67,7 @@ void straight(RUNConfig config) {
 	}
 	run_mode = STRAIGHT_MODE;
 	con_wall.enable = true;
-	while (((config.tar_length) - lapis_length - 5)
+	while (((config.tar_length) - lapis_length - 10)
 			> 1000.0f * (tar_speed - config.finish_speed)
 					* ((tar_speed - config.finish_speed) / config.acceleration)
 					/ 2.0f) {
@@ -167,8 +168,8 @@ void turn(TURNConfig config) {
 		tar_degree = max_degree;
 	}
 //	tone(tone_D, 10);
-//	while (ang >= 0.1f || ang <= -0.1f)
-//		;
+	while (ang >= 0.1f || ang <= -0.1f)
+		;
 //	tone(tone_F, 10);
 	tar_ang = 0;
 	ang_accel = 0;
@@ -216,7 +217,7 @@ void front_adjust(void) {
 			//加速度を0にする
 			tar_accel = 0;
 			tar_speed = 0;
-			if ((con_fwall.error) < 50 && (con_fwall.error) > -50) {
+			if ((con_fwall.error) < 20 && (con_fwall.error) > -20) {
 				break;
 			}
 		}
@@ -226,7 +227,8 @@ void front_adjust(void) {
 	ang_accel = 0;
 	//現在距離を0にリセット
 	lapis_length = 0;
-	Delay_ms(50);
+	while (ang >= 0.1f || ang <= -0.1f);
+	Delay_ms(100);
 }
 
 void turn_u(void) {
@@ -234,7 +236,7 @@ void turn_u(void) {
 	int8_t f_adjust = false, r_adjust = false, l_adjust = false;
 
 	TURNConfig turn_config =
-			{ 90, 30.0f * PI, PI / 10, 5.0f * PI, 0, TURN_RIGHT };
+			{ 90, 20.0f * PI, PI / 10, 5.0f * PI, 0, TURN_RIGHT };
 
 	//自分の方向に応じて書き込むデータを生成
 	//CONV_SEN2WALL()はmacro.hを参照
@@ -275,4 +277,6 @@ void turn_u(void) {
 		turn_config.tar_deg = 180;
 		turn(turn_config);				//180ターン
 	}
+	chenge_head(TURN_RIGHT,180,&head);
+	lapis_length=0;
 }

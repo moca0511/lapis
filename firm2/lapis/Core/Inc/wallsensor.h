@@ -25,16 +25,18 @@ typedef struct
 	t_bool is_control;	//制御に使うか否か
 }t_sensor;			//センサ構造体
 
-#define RF_WALL 1750
-#define LF_WALL 1300
-#define RS_WALL 650
-#define LS_WALL 820
+#define RF_WALL 1690
+#define LF_WALL 1250
+#define RS_WALL 660
+#define LS_WALL 900
 
 #define RF_TH 70
 #define LF_TH 60
 #define RS_TH 300
 #define LS_TH 330
 
+#define RS_CON 400
+#define LS_CON 600
 
 //LED PWM出力チャンネル
 //#define LED_TIM_HANDLE &htim3

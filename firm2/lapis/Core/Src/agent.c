@@ -37,7 +37,7 @@ extern int8_t head;	//　現在向いている方向(北東南西(0,1,2,3))
 void adachi(RUNConfig run_config, TURNConfig turn_config, uint16_t gx,
 		uint16_t gy) {
 	uint8_t temp_head = 0;
-	int32_t speed_buf = run_config.finish_speed;
+	float speed_buf = run_config.finish_speed;
 	int8_t move_f = -1;
 	int8_t remenber = 1;
 
@@ -97,7 +97,6 @@ void adachi(RUNConfig run_config, TURNConfig turn_config, uint16_t gx,
 //				ajast();
 //			}
 			turn_u();
-			chenge_head(1, 180, &head);
 			printf("G\n");
 			break;
 		}
@@ -202,7 +201,7 @@ void adachi(RUNConfig run_config, TURNConfig turn_config, uint16_t gx,
 			run_config.tar_length = BLOCK_LENGTH * 0.5;
 
 			if (move_f == -1) {    //中央から区切りへ
-				run_config.finish_speed = 0.3;
+				run_config.finish_speed = speed_buf;
 				straight(run_config);
 			} else {    //区切りから中央へ
 				if (map_posX == gx && map_posY == gy) {
@@ -229,9 +228,9 @@ void adachi(RUNConfig run_config, TURNConfig turn_config, uint16_t gx,
 		case 1:
 			if (move_f == -1) {
 				turn_config.dir = TURN_RIGHT;
-				Delay_ms(50);
+				Delay_ms(100);
 				turn(turn_config);
-				Delay_ms(50);
+				Delay_ms(100);
 				chenge_head(turn_config.dir, turn_config.tar_deg, &head);
 				run_config.finish_speed = speed_buf;
 			} else {
@@ -244,12 +243,12 @@ void adachi(RUNConfig run_config, TURNConfig turn_config, uint16_t gx,
 					front_adjust();
 				}
 				turn_config.dir = TURN_RIGHT;
-				Delay_ms(50);
+				Delay_ms(100);
 				turn(turn_config);
-				Delay_ms(50);
+				Delay_ms(100);
+				run_config.finish_speed = speed_buf;
 				straight(run_config);
 				chenge_head(turn_config.dir, turn_config.tar_deg, &head);
-				run_config.finish_speed = speed_buf;
 				chenge_pos(1, &map_posX, &map_posY, head);
 				wall_set(0x03);
 				wall_set_around();
@@ -269,9 +268,8 @@ void adachi(RUNConfig run_config, TURNConfig turn_config, uint16_t gx,
 				straight(run_config);
 			}
 			move_f = -1;
-			Delay_ms(50);
+			Delay_ms(100);
 			turn_u();
-			chenge_head(1, 180, &head);
 //			if (((((map[map_posX][map_posY].wall & 0x0f) | (map[map_posX][map_posY].wall << 4))
 //					<< head) & 0xc0) == 0xc0) {
 //				turn_config.dir = TURN_LEFT;
@@ -307,9 +305,9 @@ void adachi(RUNConfig run_config, TURNConfig turn_config, uint16_t gx,
 		case 3:
 			if (move_f == -1) {
 				turn_config.dir = TURN_LEFT;
-				Delay_ms(50);
+				Delay_ms(100);
 				turn(turn_config);
-				Delay_ms(50);
+				Delay_ms(100);
 				chenge_head(turn_config.dir, turn_config.tar_deg, &head);
 				run_config.finish_speed = speed_buf;
 			} else {
@@ -322,12 +320,12 @@ void adachi(RUNConfig run_config, TURNConfig turn_config, uint16_t gx,
 					front_adjust();
 				}
 				turn_config.dir = TURN_LEFT;
-				Delay_ms(50);
+				Delay_ms(100);
 				turn(turn_config);
-				Delay_ms(50);
+				Delay_ms(100);
+				run_config.finish_speed = speed_buf;
 				straight(run_config);
 				chenge_head(turn_config.dir, turn_config.tar_deg, &head);
-				run_config.finish_speed = speed_buf;
 				chenge_pos(1, &map_posX, &map_posY, head);
 				wall_set(0x03);
 				wall_set_around();
@@ -358,7 +356,7 @@ void adachi(RUNConfig run_config, TURNConfig turn_config, uint16_t gx,
  motor_stop();
  //			osThreadFlagsSet(Sensor_TaskHandle, TASK_STOP);
  while (HAL_GPIO_ReadPin(OK_GPIO_Port, OK_Pin) == 0) {
- Delay_ms(50);
+ Delay_ms(100);
  }
  tone(tone_hiC, 200);
  break;
@@ -645,6 +643,14 @@ void saitan(RUNConfig run_config, TURNConfig turn_config, uint16_t gx,
 //		}
 	}
 
+	if(rute[i-1].direction==0){
+		rute[i-1].value+=45;
+	}else{
+		rute[i].direction=0;
+		rute[i].value=BLOCK_LENGTH*0.2f;
+		i++;
+	}
+
 	for (int f = 0; f < i; f++) {
 		printf("%d:direction=%d value=%ld\n", f, rute[f].direction,
 				rute[f].value);
@@ -661,7 +667,6 @@ void saitan(RUNConfig run_config, TURNConfig turn_config, uint16_t gx,
 //				osMutexRelease(UART_MutexHandle);
 //			}
 			run_config.tar_length = rute[f].value;
-
 			straight(run_config);
 //			if (f == 0) {
 //				run_config.tar_length += 90;
@@ -688,9 +693,9 @@ void saitan(RUNConfig run_config, TURNConfig turn_config, uint16_t gx,
 					front_adjust();
 				}
 				turn_config.dir = TURN_RIGHT;
-				Delay_ms(50);
+				Delay_ms(100);
 				turn(turn_config);
-				Delay_ms(50);
+				Delay_ms(100);
 			}
 			chenge_head(TURN_RIGHT, 90, &head);
 //			chenge_pos(1, &map_posX, &map_posY, head);
@@ -720,21 +725,17 @@ void saitan(RUNConfig run_config, TURNConfig turn_config, uint16_t gx,
 					front_adjust();
 				}
 				turn_config.dir = TURN_LEFT;
-				Delay_ms(50);
+				Delay_ms(100);
 				turn(turn_config);
-				Delay_ms(50);
+				Delay_ms(100);
 
 			}
 			chenge_head(TURN_LEFT, 90, &head);
-			chenge_pos(1, &map_posX, &map_posY, head);
+//			chenge_pos(1, &map_posX, &map_posY, head);
 			break;
 		}
 	}
-	run_config.max_speed = 0.2f;
-	run_config.finish_speed = 0;
-	run_config.tar_length = BLOCK_LENGTH / 2;
-	straight(run_config);
-	chenge_pos(1, &map_posX, &map_posY, head);
+//	run_config.max_speed = 0.2f;
 	map_posX = gx;
 	map_posY = gy;
 	Delay_ms(500);

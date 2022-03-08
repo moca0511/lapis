@@ -246,7 +246,7 @@ uint8_t icm20602_get_gyro(float *gyro) {
 
 	*gyro = _gyro_scale * gyro_adc;
 	*gyro -= gyro_drift;
-	*gyro *= 1.022f;
+	*gyro *= 1.00f;
 	return 0;
 }
 uint8_t icm20602_get_accel(float *accel) {
@@ -270,7 +270,7 @@ float icm20602_get_temp() {
 }
 
 void icm20602_get_deg(float *degree, float gyro, float gyro_prev, float t) {
-	*degree += t * (gyro + gyro_prev) / 2;
+	*degree += t * (gyro * 0.8f + gyro_prev * 0.2f);
 //	if (*degree > 360.0f) {
 //		*degree -= 360.0f;
 //	}
@@ -288,7 +288,7 @@ void icm20602_get_gyro_drift(void) {
 	for (int i = 0; i < 100; i++) {
 		icm20602_get_gyro(&buff);
 		drift += buff;
-		Delay_ms(20);
+		Delay_ms(10);
 	}
 	gyro_drift = drift / 100.0f;
 	return;
@@ -301,7 +301,7 @@ void icm20602_get_accel_drift(void) {
 	for (int i = 0; i < 100; i++) {
 		icm20602_get_accel(&buff);
 		drift += buff;
-		Delay_ms(20);
+		Delay_ms(10);
 	}
 	accel_drift = drift / 100.0f;
 	return;

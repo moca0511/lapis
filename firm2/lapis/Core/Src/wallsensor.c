@@ -19,11 +19,12 @@ void init_wallSensor(void) {
 	sensorData[LS].ref = LS_WALL;
 	sensorData[RF].ref = RF_WALL;
 	sensorData[LF].ref = LF_WALL;
-	sensorData[RS].th_wall = sensorData[RS].th_control = RS_TH;
+	sensorData[RS].th_wall =  RS_TH;
 	sensorData[RF].th_wall = sensorData[RF].th_control = RF_TH;
-	sensorData[LS].th_wall = sensorData[LS].th_control = LS_TH;
+	sensorData[LS].th_wall =  LS_TH;
 	sensorData[LF].th_wall = sensorData[LF].th_control = LF_TH;
-
+	sensorData[RS].th_control = RS_CON;
+	sensorData[LS].th_control = LS_CON;
 	HAL_GPIO_WritePin(LED_LSRF_GPIO_Port, LED_LSRF_Pin, RESET);
 	HAL_GPIO_WritePin(LED_LFRS_GPIO_Port, LED_LFRS_Pin, RESET);
 	return;
