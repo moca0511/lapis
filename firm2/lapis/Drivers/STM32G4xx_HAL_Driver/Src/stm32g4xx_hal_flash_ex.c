@@ -70,7 +70,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32g4xx_hal.h"
-
+#include<stdio.h>
 /** @addtogroup STM32G4xx_HAL_Driver
   * @{
   */
@@ -143,7 +143,6 @@ HAL_StatusTypeDef HAL_FLASHEx_Erase(FLASH_EraseInitTypeDef *pEraseInit, uint32_t
 
   /* Check the parameters */
   assert_param(IS_FLASH_TYPEERASE(pEraseInit->TypeErase));
-
   /* Process Locked */
   __HAL_LOCK(&pFlash);
 

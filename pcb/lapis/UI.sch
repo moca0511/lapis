@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 14 14
+Sheet 7 15
 Title ""
 Date ""
 Rev ""
@@ -169,57 +169,6 @@ Wire Wire Line
 	4500 3300 4300 3300
 Connection ~ 4500 3300
 $Comp
-L power:+3.3V #PWR?
-U 1 1 603B98FF
-P 9400 3050
-AR Path="/5FA81D59/603B98FF" Ref="#PWR?"  Part="1" 
-AR Path="/603AF16B/603B98FF" Ref="#PWR0165"  Part="1" 
-F 0 "#PWR0165" H 9400 2900 50  0001 C CNN
-F 1 "+3.3V" H 9415 3223 50  0000 C CNN
-F 2 "" H 9400 3050 50  0001 C CNN
-F 3 "" H 9400 3050 50  0001 C CNN
-	1    9400 3050
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR?
-U 1 1 603B9905
-P 9100 3800
-AR Path="/5FA81D59/603B9905" Ref="#PWR?"  Part="1" 
-AR Path="/603AF16B/603B9905" Ref="#PWR0166"  Part="1" 
-F 0 "#PWR0166" H 9100 3550 50  0001 C CNN
-F 1 "GND" H 9105 3627 50  0000 C CNN
-F 2 "" H 9100 3800 50  0001 C CNN
-F 3 "" H 9100 3800 50  0001 C CNN
-	1    9100 3800
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x04 J?
-U 1 1 603B990B
-P 9800 3400
-AR Path="/5FA81D59/603B990B" Ref="J?"  Part="1" 
-AR Path="/603AF16B/603B990B" Ref="J10"  Part="1" 
-F 0 "J10" H 9880 3392 50  0000 L CNN
-F 1 "Conn_01x04" H 9880 3301 50  0000 L CNN
-F 2 "Connector_PinSocket_2.54mm:PinSocket_1x04_P2.54mm_Vertical" H 9800 3400 50  0001 C CNN
-F 3 "~" H 9800 3400 50  0001 C CNN
-	1    9800 3400
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	9400 3050 9400 3300
-Wire Wire Line
-	9400 3300 9600 3300
-Wire Wire Line
-	9100 3400 9100 3800
-Wire Wire Line
-	9100 3400 9600 3400
-Wire Wire Line
-	9600 3500 9550 3500
-Wire Wire Line
-	9600 3600 9550 3600
-$Comp
 L Device:Speaker LS?
 U 1 1 603B9919
 P 7200 3100
@@ -285,7 +234,7 @@ $EndComp
 Wire Wire Line
 	7000 3750 7000 4200
 Text HLabel 6400 3550 0    50   Input ~ 0
-SPEAKER
+BUZZER
 $Comp
 L Device:R R?
 U 1 1 603C4A12
@@ -315,17 +264,13 @@ $EndComp
 Wire Wire Line
 	4500 3300 4700 3300
 Text HLabel 3400 4100 2    50   Input ~ 0
-LED3
+LED4
 Text HLabel 2850 4100 2    50   Input ~ 0
-LED2
+LED3
 Text HLabel 2350 4100 2    50   Input ~ 0
-LED1
+LED2
 Text HLabel 1850 4100 2    50   Input ~ 0
-LED0
-Text HLabel 9550 3500 0    50   Input ~ 0
-RX
-Text HLabel 9550 3600 0    50   Output ~ 0
-TX
+LED1
 $Comp
 L power:+3.3V #PWR?
 U 1 1 6049A57C
@@ -407,4 +352,65 @@ Wire Wire Line
 	5500 3400 5650 3400
 Wire Wire Line
 	5650 3150 5650 3400
+Wire Wire Line
+	9450 3250 9400 3250
+Wire Wire Line
+	9450 3350 9400 3350
+Text HLabel 9400 3250 0    50   Input ~ 0
+RX
+Text HLabel 9400 3350 0    50   Output ~ 0
+TX
+$Comp
+L Connector:Conn_01x06_Female J10
+U 1 1 61A6FAA6
+P 9650 3150
+F 0 "J10" H 9678 3126 50  0000 L CNN
+F 1 "Conn_01x06_Female" H 9678 3035 50  0000 L CNN
+F 2 "Connector_PinHeader_1.27mm:PinHeader_1x06_P1.27mm_Vertical" H 9650 3150 50  0001 C CNN
+F 3 "~" H 9650 3150 50  0001 C CNN
+	1    9650 3150
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9450 3050 9400 3050
+Wire Wire Line
+	9450 3150 9400 3150
+Text HLabel 9400 3050 0    50   BiDi ~ 0
+SWDIO
+Text HLabel 9400 3150 0    50   Output ~ 0
+SWCLK
+Wire Wire Line
+	9250 3450 9450 3450
+Wire Wire Line
+	9250 2950 9450 2950
+Wire Wire Line
+	9250 2700 9250 2950
+Wire Wire Line
+	9250 3450 9250 3850
+$Comp
+L power:+3.3V #PWR?
+U 1 1 603B98FF
+P 9250 2700
+AR Path="/5FA81D59/603B98FF" Ref="#PWR?"  Part="1" 
+AR Path="/603AF16B/603B98FF" Ref="#PWR0165"  Part="1" 
+F 0 "#PWR0165" H 9250 2550 50  0001 C CNN
+F 1 "+3.3V" H 9265 2873 50  0000 C CNN
+F 2 "" H 9250 2700 50  0001 C CNN
+F 3 "" H 9250 2700 50  0001 C CNN
+	1    9250 2700
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 603B9905
+P 9250 3850
+AR Path="/5FA81D59/603B9905" Ref="#PWR?"  Part="1" 
+AR Path="/603AF16B/603B9905" Ref="#PWR0166"  Part="1" 
+F 0 "#PWR0166" H 9250 3600 50  0001 C CNN
+F 1 "GND" H 9255 3677 50  0000 C CNN
+F 2 "" H 9250 3850 50  0001 C CNN
+F 3 "" H 9250 3850 50  0001 C CNN
+	1    9250 3850
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC

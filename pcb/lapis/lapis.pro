@@ -1,4 +1,4 @@
-update=2021/02/24 4:14:00
+update=2021/11/30 23:59:18
 version=1
 last_client=kicad
 [general]
@@ -25,7 +25,7 @@ ERC_TestSimilarLabels=1
 [pcbnew]
 version=1
 PageLayoutDescrFile=
-LastNetListRead=
+LastNetListRead=lapis.net
 CopperLayerCount=2
 BoardThickness=0.6
 AllowMicroVias=0
@@ -35,7 +35,7 @@ ProhibitOverlappingCourtyards=1
 MinTrackWidth=0.16
 MinViaDiameter=0.6
 MinViaDrill=0.3
-MinMicroViaDiameter=0.2
+MinMicroViaDiameter=0.3
 MinMicroViaDrill=0.09999999999999999
 MinHoleToHole=0.35
 TrackWidth1=0.2
@@ -75,7 +75,7 @@ OthersTextUpright=1
 SolderMaskClearance=0
 SolderMaskMinWidth=0
 SolderPasteClearance=0
-SolderPasteRatio=-0
+SolderPasteRatio=0
 [pcbnew/Layer.F.Cu]
 Name=F.Cu
 Type=0

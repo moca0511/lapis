@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 2 14
+Sheet 2 15
 Title ""
 Date ""
 Rev ""
@@ -118,10 +118,10 @@ IMU_SCK
 Text HLabel 5200 4300 0    50   Input ~ 0
 IMU_MOSI
 $Comp
-L Sensor_Motion:ICM-20602 U2
+L Sensor_Motion:ICM-20602 U3
 U 1 1 5FB362FC
 P 5850 4300
-F 0 "U2" H 5500 4850 50  0000 C CNN
+F 0 "U3" H 5500 4850 50  0000 C CNN
 F 1 "ICM-20602" H 5500 4750 50  0000 C CNN
 F 2 "Package_LGA:LGA-16_3x3mm_P0.5mm_LayoutBorder3x5y" H 5850 4550 50  0001 C CNN
 F 3 "http://www.invensense.com/wp-content/uploads/2016/10/DS-000176-ICM-20602-v1.0.pdf" H 5900 5250 50  0001 C CNN
