@@ -73,7 +73,6 @@ extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim5;
 
 void fale_safe(uint8_t error) {
-	int8_t sound = 0;
 	HAL_TIM_Base_Stop_IT(&htim1); //1kHz speed conntrol
 	HAL_TIM_Base_Stop_IT(&htim3); //4kHz wall sensor
 	HAL_TIM_Base_Stop_IT(&htim5); //10kHz odmetry

@@ -56,7 +56,6 @@ void lapis(void) {
 	HAL_TIM_Base_Start_IT(&htim1); //1kHz speed conntrol
 	HAL_TIM_Base_Start_IT(&htim3); //4kHz wall sensor
 	HAL_TIM_Base_Start_IT(&htim5); //10kHz odmetry
-
 	adc_dma_start();
 	icm20602_init();
 	AS5047_Init();
@@ -65,7 +64,7 @@ void lapis(void) {
 	AS5047_SetZeroPosition(ENC_R);
 	AS5047_SetZeroPosition(ENC_L);
 	init_control();
-
+	printf("lapis start\n");
 	run_mode = NON_MODE;
 
 	if (batt_level > BATT_FULL) {
@@ -163,10 +162,10 @@ void lapis(void) {
 	}
 }
 void MENU(int16_t *mode) {
-	static char *mode_name[16] = { MODE_NAME0, MODE_NAME1, MODE_NAME2,
-	MODE_NAME3, MODE_NAME4, MODE_NAME5, MODE_NAME6, MODE_NAME7,
-	MODE_NAME8, MODE_NAME9, MODE_NAME10, MODE_NAME11, MODE_NAME12,
-	MODE_NAME13, MODE_NAME14, MODE_NAME15 };
+//	static char *mode_name[16] = { MODE_NAME0, MODE_NAME1, MODE_NAME2,
+//	MODE_NAME3, MODE_NAME4, MODE_NAME5, MODE_NAME6, MODE_NAME7,
+//	MODE_NAME8, MODE_NAME9, MODE_NAME10, MODE_NAME11, MODE_NAME12,
+//	MODE_NAME13, MODE_NAME14, MODE_NAME15 };
 	int16_t old_mode = 1;
 	for (;;) {
 		if (batt_level <= BATT_WARNING) { //warning
@@ -226,9 +225,20 @@ void mode1(void) {
 	}
 }
 void mode2(void) {
-	RUNConfig run_config = { 10.0f, 0.3f, 0.1f, 0.3f, 90.0f / 2 };
+	RUNConfig run_config = { 4.0f, 0.25f, 0.1f, 0.25f, 90.0f };
+	TURNConfig turn_config = { 90.0f, 34.0f * PI, PI / 10, 5.0f * PI, 0.25f,
+	TURN_RIGHT };
+	TURNConfig saitan_turn_config = { 90.0f, 40.0f * PI, PI / 10, 5.0f * PI,
+			0.3f,
+			TURN_RIGHT };
+	RUNConfig saitan_run_config = { 3.0f, 0.3f, 0.1f, 0.0f, 90.0f / 2 };
+	RUNConfig saitan_run_config_2 = { 3.0f, 0.5f, 0.1f, 0.0f, 90.0f / 2 };
+	RUNConfig saitan_run_config_3 = { 3.0f, 0.7f, 0.1f, 0.0f, 90.0f / 2 };
+	RUNConfig saitan_run_config_4 = { 3.0f, 1.0f, 0.1f, 0.0f, 90.0f / 2 };
 	HAL_Delay(1000);
 	tone(tone_hiC, 10);
+	smap_Init();
+	print_map();
 	icm20602_init();
 	degree = 0;
 	posX = posY = 0;
@@ -236,32 +246,93 @@ void mode2(void) {
 	ang_i = 0;
 	ang_d = 0;
 	ang_p_prev = 0;
-	tone(tone_hiC, 10);
 	posX = posY = lapis_length = 0;
-//	HAL_Delay(1000);
-	con_wall.enable = true;
+	map_posX = START_X;
+	map_posY = START_Y;
+	head = 0;
+	turn_u();
+	turn_u();
 	log_timer = 0;
 	log_flag = true;
-	straight(run_config);
-	straight(run_config);
-	straight(run_config);
-	run_config.finish_speed = 0;
-	straight(run_config);
-	con_wall.enable = false;
-//	turn(90,
-//			5.0f * PI, PI / 30, 1.5f * PI, 0.3, 0);
-//	straight(2.0f, 0.3f, 0.2f, 0.0f, 90.0f);
-
-	HAL_Delay(500);
-	log_flag = false;
+	adachi_s(run_config, turn_config, 13, GOAL_X, GOAL_Y);
 	run_mode = NON_MODE;
 	tar_speed = 0;
+	HAL_TIM_Base_Stop_IT(&htim1); //1kHz speed conntrol
+	HAL_TIM_Base_Stop_IT(&htim3); //4kHz wall sensor
+	HAL_TIM_Base_Stop_IT(&htim5); //10kHz odmetry
+	maze_save();
+	HAL_TIM_Base_Start_IT(&htim1); //1kHz speed conntrol
+	HAL_TIM_Base_Start_IT(&htim3); //4kHz wall sensor
+	HAL_TIM_Base_Start_IT(&htim5); //10kHz odmetry
+	Delay_ms(1000);
+	adachi_s(run_config, turn_config, 13, START_X, START_Y);
+	run_mode = NON_MODE;
+	tone(tone_hiC, 10);
+	HAL_TIM_Base_Stop_IT(&htim1); //1kHz speed conntrol
+	HAL_TIM_Base_Stop_IT(&htim3); //4kHz wall sensor
+	HAL_TIM_Base_Stop_IT(&htim5); //10kHz odmetry
+	maze_save();
+	HAL_TIM_Base_Start_IT(&htim1); //1kHz speed conntrol
+	HAL_TIM_Base_Start_IT(&htim3); //4kHz wall sensor
+	HAL_TIM_Base_Start_IT(&htim5); //10kHz odmetry
+	Delay_ms(1000);
+	music();
+	saitan_s(saitan_run_config, turn_config, 13, GOAL_X, GOAL_Y, map_posX,
+			map_posY, head);
+	HAL_Delay(1000);
+	run_mode = NON_MODE;
+	music();
+	saitan_s(saitan_run_config, turn_config, 13, START_X, START_Y, map_posX,
+			map_posY, head);
+	HAL_Delay(1000);
+	run_mode = NON_MODE;
+	music();
+	saitan_s(saitan_run_config_2, saitan_turn_config, 10, GOAL_X, GOAL_Y,
+			map_posX, map_posY, head);
+	HAL_Delay(1000);
+	run_mode = NON_MODE;
+	music();
+	saitan_s(saitan_run_config, turn_config, 13, START_X, START_Y, map_posX,
+			map_posY, head);
+	HAL_Delay(1000);
+	run_mode = NON_MODE;
+	music();
+	saitan_s(saitan_run_config_3, saitan_turn_config, 10, GOAL_X, GOAL_Y,
+			map_posX, map_posY, head);
+	HAL_Delay(1000);
+	run_mode = NON_MODE;
+	music();
+	saitan_s(saitan_run_config, turn_config, 13, START_X, START_Y, map_posX,
+			map_posY, head);
+	HAL_Delay(1000);
+	run_mode = NON_MODE;
+	music();
+	saitan_s(saitan_run_config_4, saitan_turn_config, 10, GOAL_X, GOAL_Y,
+			map_posX, map_posY, head);
+	HAL_Delay(1000);
+	run_mode = NON_MODE;
+	music();
+	saitan_s(saitan_run_config, turn_config, 13, START_X, START_Y, map_posX,
+			map_posY, head);
+	HAL_Delay(1000);
+	run_mode = NON_MODE;
+
 }
 void mode3(void) {
-	RUNConfig run_config = { 2.0f, 0.3f, 0.1f, 0.3f, 90.0f };
-	TURNConfig turn_config = { 90, 100.0f * PI, PI / 30, 20.0f * PI, 0.3, 1 };
+	RUNConfig run_config = { 4.0f, 0.25f, 0.1f, 0.25f, 90.0f };
+	TURNConfig turn_config = { 90.0f, 34.0f * PI, PI / 10, 5.0f * PI, 0.25f,
+	TURN_RIGHT };
+	TURNConfig saitan_turn_config = { 90.0f, 40.0f * PI, PI / 10, 5.0f * PI,
+			0.3f,
+			TURN_RIGHT };
+	RUNConfig saitan_run_config = { 3.0f, 0.3f, 0.1f, 0.0f, 90.0f / 2 };
+	RUNConfig saitan_run_config_2 = { 3.0f, 0.5f, 0.1f, 0.0f, 90.0f / 2 };
+	RUNConfig saitan_run_config_3 = { 3.0f, 0.7f, 0.1f, 0.0f, 90.0f / 2 };
+	RUNConfig saitan_run_config_4 = { 3.0f, 1.0f, 0.1f, 0.0f, 90.0f / 2 };
 	HAL_Delay(1000);
 	tone(tone_hiC, 10);
+	maze_load();
+	print_map();
 	icm20602_init();
 	degree = 0;
 	posX = posY = 0;
@@ -269,26 +340,42 @@ void mode3(void) {
 	ang_i = 0;
 	ang_d = 0;
 	ang_p_prev = 0;
-	tone(tone_hiC, 10);
 	posX = posY = lapis_length = 0;
+	map_posX = START_X;
+	map_posY = START_Y;
+	head = 0;
+	turn_u();
+	turn_u();
 	log_timer = 0;
 	log_flag = true;
-	straight(run_config);
-	turn(turn_config);
-	run_config.finish_speed = 0;
-	straight(run_config);
 
-	log_flag = false;
-	HAL_Delay(500);
+	music();
+	saitan_s(saitan_run_config, turn_config, 13, GOAL_X, GOAL_Y, map_posX,
+			map_posY, head);
+	HAL_Delay(1000);
 	run_mode = NON_MODE;
-	tar_speed = 0;
-
+	music();
+	saitan_s(saitan_run_config, turn_config, 13, START_X, START_Y, map_posX,
+			map_posY, head);
+	HAL_Delay(1000);
+	run_mode = NON_MODE;
+//	music();
 }
 void mode4(void) {
-	RUNConfig run_config = { 20.0f, 2.0f, 0.1f, 0.8f, BLOCK_LENGTH };
-	TURNConfig turn_config = { 90, 20.0f * PI, PI / 30, 3.0f * PI, 0.8f, 1 };
+	RUNConfig run_config = { 4.0f, 0.25f, 0.1f, 0.25f, 90.0f };
+	TURNConfig turn_config = { 90.0f, 34.0f * PI, PI / 10, 5.0f * PI, 0.25f,
+	TURN_RIGHT };
+	TURNConfig saitan_turn_config = { 90.0f, 40.0f * PI, PI / 10, 5.0f * PI,
+			0.3f,
+			TURN_RIGHT };
+	RUNConfig saitan_run_config = { 3.0f, 0.3f, 0.1f, 0.0f, 90.0f / 2 };
+	RUNConfig saitan_run_config_2 = { 3.0f, 0.5f, 0.1f, 0.0f, 90.0f / 2 };
+	RUNConfig saitan_run_config_3 = { 3.0f, 0.7f, 0.1f, 0.0f, 90.0f / 2 };
+	RUNConfig saitan_run_config_4 = { 3.0f, 1.0f, 0.1f, 0.0f, 90.0f / 2 };
 	HAL_Delay(1000);
 	tone(tone_hiC, 10);
+	maze_load();
+	print_map();
 	icm20602_init();
 	degree = 0;
 	posX = posY = 0;
@@ -296,25 +383,42 @@ void mode4(void) {
 	ang_i = 0;
 	ang_d = 0;
 	ang_p_prev = 0;
-	tone(tone_hiC, 10);
 	posX = posY = lapis_length = 0;
+	map_posX = START_X;
+	map_posY = START_Y;
+	head = 0;
+	turn_u();
+	turn_u();
 	log_timer = 0;
 	log_flag = true;
-	//	HAL_Delay(1000);
-	straight(run_config);
-	turn(turn_config);
-	run_config.finish_speed = 0;
-	straight(run_config);
+
+	music();
+	saitan_s(saitan_run_config_2, saitan_turn_config, 10, GOAL_X, GOAL_Y,
+			map_posX, map_posY, head);
+	HAL_Delay(1000);
 	run_mode = NON_MODE;
-	log_flag = false;
-	HAL_Delay(500);
-	tar_speed = 0;
+	music();
+	saitan_s(saitan_run_config, turn_config, 13, START_X, START_Y, map_posX,
+			map_posY, head);
+	HAL_Delay(1000);
+	run_mode = NON_MODE;
+//	music();
 }
 void mode5(void) {
-	TURNConfig turn_config =
-			{ 90, 30.0f * PI, PI / 10, 5.0f * PI, 0, TURN_RIGHT };
+	RUNConfig run_config = { 4.0f, 0.25f, 0.1f, 0.25f, 90.0f };
+	TURNConfig turn_config = { 90.0f, 34.0f * PI, PI / 10, 5.0f * PI, 0.25f,
+	TURN_RIGHT };
+	TURNConfig saitan_turn_config = { 90.0f, 40.0f * PI, PI / 10, 5.0f * PI,
+			0.3f,
+			TURN_RIGHT };
+	RUNConfig saitan_run_config = { 3.0f, 0.3f, 0.1f, 0.0f, 90.0f / 2 };
+	RUNConfig saitan_run_config_2 = { 3.0f, 0.5f, 0.1f, 0.0f, 90.0f / 2 };
+	RUNConfig saitan_run_config_3 = { 3.0f, 0.7f, 0.1f, 0.0f, 90.0f / 2 };
+	RUNConfig saitan_run_config_4 = { 3.0f, 1.0f, 0.1f, 0.0f, 90.0f / 2 };
 	HAL_Delay(1000);
 	tone(tone_hiC, 10);
+	maze_load();
+	print_map();
 	icm20602_init();
 	degree = 0;
 	posX = posY = 0;
@@ -322,72 +426,69 @@ void mode5(void) {
 	ang_i = 0;
 	ang_d = 0;
 	ang_p_prev = 0;
-	tone(tone_hiC, 10);
 	posX = posY = lapis_length = 0;
+	map_posX = START_X;
+	map_posY = START_Y;
+	head = 0;
+	turn_u();
+	turn_u();
 	log_timer = 0;
 	log_flag = true;
-	turn(turn_config);
-	log_flag = false;
-	tone(tone_hiC, 10);
-	HAL_Delay(500);
+
+	music();
+	saitan_s(saitan_run_config_3, saitan_turn_config, 10, GOAL_X, GOAL_Y,
+			map_posX, map_posY, head);
+	HAL_Delay(1000);
 	run_mode = NON_MODE;
-	tar_speed = 0;
+	music();
+	saitan_s(saitan_run_config, turn_config, 13, START_X, START_Y, map_posX,
+			map_posY, head);
+	HAL_Delay(1000);
+	run_mode = NON_MODE;
+//	music();
 }
 void mode6(void) {
-	TURNConfig turn_config =
-			{ 90, 10.0f * PI, PI / 30, 1.0f * PI, 0, TURN_RIGHT };
-	HAL_Delay(1000);
-	tone(tone_hiC, 10);
-	icm20602_init();
-	degree = 0;
-	posX = posY = 0;
-	ang_p = 0;
-	ang_i = 0;
-	ang_d = 0;
-	ang_p_prev = 0;
-	tone(tone_hiC, 10);
-	posX = posY = lapis_length = 0;
-	degree = 0;
+	RUNConfig run_config = { 4.0f, 0.25f, 0.1f, 0.25f, 90.0f };
+		TURNConfig turn_config = { 90.0f, 34.0f * PI, PI / 10, 5.0f * PI, 0.25f,
+		TURN_RIGHT };
+		TURNConfig saitan_turn_config = { 90.0f, 40.0f * PI, PI / 10, 5.0f * PI,
+				0.3f,
+				TURN_RIGHT };
+		RUNConfig saitan_run_config = { 3.0f, 0.3f, 0.1f, 0.0f, 90.0f / 2 };
+		RUNConfig saitan_run_config_2 = { 3.0f, 0.5f, 0.1f, 0.0f, 90.0f / 2 };
+		RUNConfig saitan_run_config_3 = { 3.0f, 0.7f, 0.1f, 0.0f, 90.0f / 2 };
+		RUNConfig saitan_run_config_4 = { 3.0f, 1.0f, 0.1f, 0.0f, 90.0f / 2 };
+		HAL_Delay(1000);
+		tone(tone_hiC, 10);
+		maze_load();
+		print_map();
+		icm20602_init();
+		degree = 0;
+		posX = posY = 0;
+		ang_p = 0;
+		ang_i = 0;
+		ang_d = 0;
+		ang_p_prev = 0;
+		posX = posY = lapis_length = 0;
+		map_posX = START_X;
+		map_posY = START_Y;
+		head = 0;
+		turn_u();
+		turn_u();
+		log_timer = 0;
+		log_flag = true;
 
-	turn(turn_config);
-	tone(tone_hiC, 10);
-	HAL_Delay(500);
-	turn(turn_config);
-	tone(tone_hiC, 10);
-	HAL_Delay(500);
-	turn(turn_config);
-	tone(tone_hiC, 10);
-	HAL_Delay(500);
-	turn(turn_config);
-	tone(tone_hiC, 10);
-	HAL_Delay(1000);
-
-	turn_config.dir = TURN_LEFT;
-	turn(turn_config);
-	tone(tone_hiC, 10);
-	HAL_Delay(500);
-	turn(turn_config);
-	tone(tone_hiC, 10);
-	HAL_Delay(500);
-	turn(turn_config);
-	tone(tone_hiC, 10);
-	HAL_Delay(500);
-	turn(turn_config);
-	tone(tone_hiC, 10);
-	HAL_Delay(1000);
-
-	turn_config.dir = TURN_RIGHT;
-	turn_config.tar_deg = 180;
-	turn(turn_config);
-	tone(tone_hiC, 10);
-	HAL_Delay(500);
-	turn_config.dir = TURN_LEFT;
-	turn(turn_config);
-	tone(tone_hiC, 10);
-	HAL_Delay(500);
-
-	run_mode = NON_MODE;
-	tar_speed = 0;
+		music();
+		saitan_s(saitan_run_config_4, saitan_turn_config, 10, GOAL_X, GOAL_Y, map_posX,
+				map_posY, head);
+		HAL_Delay(1000);
+		run_mode = NON_MODE;
+		music();
+		saitan_s(saitan_run_config, turn_config, 13, START_X, START_Y, map_posX,
+				map_posY, head);
+		HAL_Delay(1000);
+		run_mode = NON_MODE;
+//		music();
 }
 void mode7(void) {
 //	HAL_Delay(1000);
@@ -426,10 +527,11 @@ void mode9(void) {
 //	set_MR_EN(0.0f);
 }
 void mode10(void) {
-	RUNConfig run_config = { 10.0f, 0.3f, 0.1f, 0.3f, 90.0f / 2 };
-	TURNConfig turn_config =
-			{ 90, 30.0f * PI, PI / 5, 5.0f * PI, 0, TURN_RIGHT };
-	RUNConfig saitan_run_config = { 20.0f, 0.5f, 0.1f, 0.0f, 90.0f / 2 };
+//	RUNConfig run_config = { 10.0f, 0.3f, 0.1f, 0.3f, 90.0f / 2 };
+	TURNConfig saitan_turn_config = { 90.0f, 35.0f * PI, PI / 10, 5.0f * PI,
+			0.3f,
+			TURN_RIGHT };
+	RUNConfig saitan_run_config = { 5.0f, 0.6f, 0.1f, 0.0f, 90.0f / 2 };
 	HAL_Delay(1000);
 	tone(tone_hiC, 10);
 	maze_load();
@@ -444,8 +546,7 @@ void mode10(void) {
 	map_posX = START_X;
 	map_posY = START_Y;
 	head = 0;
-	log_timer = 0;
-	log_flag = true;
+//
 	turn_u();
 	turn_u();
 //
@@ -465,8 +566,10 @@ void mode10(void) {
 	tone(tone_hiC, 10);
 	Delay_ms(1000);
 	music();
-	saitan(saitan_run_config, turn_config, GOAL_X, GOAL_Y, map_posX, map_posY,
-			head);
+	log_timer = 0;
+	log_flag = true;
+	saitan_s(saitan_run_config, saitan_turn_config, 6, GOAL_X, GOAL_Y, map_posX,
+			map_posY, head);
 	HAL_Delay(500);
 	run_mode = NON_MODE;
 }
@@ -474,7 +577,7 @@ void mode11(void) {
 	RUNConfig run_config = { 5.0f, 0.3f, 0.2f, 0.3f, 90.0f / 2 };
 	TURNConfig turn_config =
 			{ 90, 20.0f * PI, PI / 10, 5.0f * PI, 0, TURN_RIGHT };
-	RUNConfig saitan_run_config = { 8.0f, 1.0f, 0.2f, 0.0f, 90.0f / 2 };
+	RUNConfig saitan_run_config = { 5.0f, 0.6f, 0.2f, 0.0f, 90.0f / 2 };
 	HAL_Delay(1000);
 	tone(tone_hiC, 10);
 	smap_Init();
@@ -543,12 +646,15 @@ void mode12(void) {
 }
 void mode13(void) {
 	while (1) {
-		printf("%d,%d,%d,%d\n", get_sensordata(LS), get_sensordata(RS),
+		printf("%ld,%ld,%ld,%ld\n", get_sensordata(LS), get_sensordata(RS),
 				get_sensordata(LF), get_sensordata(RF));
 		Delay_ms(500);
 	}
 }
 void mode14(void) {
+	make_smap(GOAL_X, GOAL_Y, 0);
+	print_map();
+	make_smap(GOAL_X, GOAL_Y, 1);
 	print_map();
 
 }
@@ -558,7 +664,7 @@ void mode15(void) {
 }
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
-	static int32_t loop = 100;
+//	static int32_t loop = 100;
 	static int8_t led_select = RS;
 
 	/*-----------------------------------------------------------
@@ -692,7 +798,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 			speed_i += speed_p;
 			speed_d = speed_p_prev - speed_p;
 			speed_p_prev = speed_p;
-
+			if (speed_p_prev > 0 && speed_p < 0) {
+				speed_i = 0;
+			}
+			if (speed_p_prev < 0 && speed_p > 0) {
+				speed_i = 0;
+			}
 			if (speed_i > 1000) {
 				speed_i = 1000;
 			}
@@ -704,11 +815,17 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 			ang_i += ang_p;
 			ang_d = ang_p_prev - ang_p;
 			ang_p_prev = ang_p;
-			if (ang_i > 1000) {
-				ang_i = 1000;
+			if (ang_p_prev > 0 && ang_p < 0) {
+				ang_i = 0;
 			}
-			if (ang_i < -1000) {
-				ang_i = -1000;
+			if (ang_p_prev < 0 && ang_p > 0) {
+				ang_i = 0;
+			}
+			if (ang_i > 500) {
+				ang_i = 500;
+			}
+			if (ang_i < -500) {
+				ang_i = -500;
 			}
 
 		}
@@ -720,7 +837,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 					+ speed_d * SPEED_KD;
 			volt_R += ang_p * ANG_KP + ang_i * ANG_KI + ang_d * ANG_KD;
 			volt_L -= ang_p * ANG_KP + ang_i * ANG_KI + ang_d * ANG_KD;
-
+			volt_R  *=1.12f;
 			if (volt_R > 0) {
 				set_MR_direction(MOVE_FORWARD);
 			} else {

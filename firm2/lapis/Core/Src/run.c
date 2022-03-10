@@ -34,7 +34,7 @@ float move_y(float degree, float speed) {
 }
 
 float get_fusioned_speed(float speed, float accel, float speed_prev, float tick) {
-	const float alpha = 0.3f;
+	const float alpha = 0.9f;
 	return alpha * (speed_prev + tick * accel) + (1.0f - alpha) * speed;
 }
 
@@ -67,7 +67,7 @@ void straight(RUNConfig config) {
 	}
 	run_mode = STRAIGHT_MODE;
 	con_wall.enable = true;
-	while (((config.tar_length) - lapis_length - 10)
+	while (((config.tar_length) - lapis_length - 40)
 			> 1000.0f * (tar_speed - config.finish_speed)
 					* ((tar_speed - config.finish_speed) / config.acceleration)
 					/ 2.0f) {
@@ -85,13 +85,13 @@ void straight(RUNConfig config) {
 			tar_speed = config.finish_speed;
 		}
 	}
-	lapis_length = 0;
 	tar_accel = 0;
 	tar_speed = config.finish_speed;
 	speed_p = 0;
 	speed_p_prev = 0;
 	speed_i = 0;
 	speed_d = 0;
+	lapis_length = 0;
 	con_wall.enable = false;
 }
 
@@ -138,6 +138,7 @@ void turn(TURNConfig config) {
 		}
 	}
 
+	ang_i = 0;
 	//BEEP();
 	//角減速区間に入るため、角加速度設定
 	if (config.dir == TURN_LEFT) {
@@ -168,8 +169,8 @@ void turn(TURNConfig config) {
 		tar_degree = max_degree;
 	}
 //	tone(tone_D, 10);
-	while (ang >= 0.1f || ang <= -0.1f)
-		;
+//	while (ang >= 0.1f || ang <= -0.1f)
+//		;
 //	tone(tone_F, 10);
 	tar_ang = 0;
 	ang_accel = 0;
@@ -209,15 +210,15 @@ void front_adjust(void) {
 	while (true) {
 		if ((now_pos - target_pos) < -10) {
 			//中央より前壁より離れている場合前進
-			tar_accel = 0.3;
+			tar_accel = 0.2;
 		} else if ((now_pos - target_pos) > 10) {
 			//中央より前壁に近い場合後退
-			tar_accel = -0.3;
+			tar_accel = -0.2;
 		} else {
 			//加速度を0にする
 			tar_accel = 0;
 			tar_speed = 0;
-			if ((con_fwall.error) < 20 && (con_fwall.error) > -20) {
+			if ((con_fwall.error) < 10 && (con_fwall.error) > -10) {
 				break;
 			}
 		}
@@ -236,7 +237,7 @@ void turn_u(void) {
 	int8_t f_adjust = false, r_adjust = false, l_adjust = false;
 
 	TURNConfig turn_config =
-			{ 90, 20.0f * PI, PI / 10, 5.0f * PI, 0, TURN_RIGHT };
+			{ 90, 20.0f * PI, PI / 10, 3.0f * PI, 0, TURN_RIGHT };
 
 	//自分の方向に応じて書き込むデータを生成
 	//CONV_SEN2WALL()はmacro.hを参照

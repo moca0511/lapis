@@ -9,7 +9,7 @@
 #define INC_LAPIS_H_
 #include"main.h"
 //　機体パラメータ
-#define TIRE_DIAMETER   (14.5f)					//　タイヤの直径　52mm
+#define TIRE_DIAMETER   (14.25f)					//　タイヤの直径　52mm
 #define TIRE_CIRCUIT    (PI * TIRE_DIAMETER)	//　タイヤの円周 163.363mm
 #define TREAD_WIDTH     (38.0f)					//　トレッド幅　87.0mm(再計測)
 #define LAPIS_LENGTH (45.0f)
@@ -55,13 +55,13 @@ typedef struct
 //　最大速度
 #define MAX_SPEED (3.0f)
 #define MIN_SPEED (0.1f)
-#define SPEED_KP (5.0f)
-#define SPEED_KI (0.01f)
-#define SPEED_KD (0.3f)
-#define ANG_KP (0.3f)
-#define ANG_KI (0.0015f)
-#define ANG_KD (0.04f)
-#define CON_WALL_KP (0.0004f)
+#define SPEED_KP (7.0f)
+#define SPEED_KI (0.1f)
+#define SPEED_KD (0.5f)
+#define ANG_KP (0.28f)
+#define ANG_KI (0.0027f)
+#define ANG_KD (0.01f)
+#define CON_WALL_KP (0.0003f)
 #define CON_FWALL_KP (0.003f)
 
 //typedef enum {

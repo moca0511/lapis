@@ -19,9 +19,9 @@ void init_wallSensor(void) {
 	sensorData[LS].ref = LS_WALL;
 	sensorData[RF].ref = RF_WALL;
 	sensorData[LF].ref = LF_WALL;
-	sensorData[RS].th_wall =  RS_TH;
+	sensorData[RS].th_wall = RS_TH;
 	sensorData[RF].th_wall = sensorData[RF].th_control = RF_TH;
-	sensorData[LS].th_wall =  LS_TH;
+	sensorData[LS].th_wall = LS_TH;
 	sensorData[LF].th_wall = sensorData[LF].th_control = LF_TH;
 	sensorData[RS].th_control = RS_CON;
 	sensorData[LS].th_control = LS_CON;
@@ -70,11 +70,9 @@ uint32_t wallSensorRead(uint8_t select) {
 
 	sensorData[select].p_value = sensorData[select].value;
 
-
-
 	if (sensorData[select].value >= sensorData[select].th_wall) {
 		sensorData[select].error = sensorData[select].value
-					- sensorData[select].ref;
+				- sensorData[select].ref;
 		sensorData[select].is_wall = sensorData[select].is_control = true;
 	} else {
 		sensorData[select].is_wall = sensorData[select].is_control = false;
@@ -137,7 +135,7 @@ t_bool get_sensor_iscontrol(uint8_t select) {
 int16_t get_sensor_error(uint8_t select) {
 	switch (select) {
 	case RS:
-		return sensorData[RS].error;
+		return sensorData[RS].error *1.5f;
 	case RF:
 		return sensorData[RF].error;
 	case LS:
