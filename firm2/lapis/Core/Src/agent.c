@@ -1323,14 +1323,14 @@ void saitan_s(RUNConfig run_config, TURNConfig turn_config, float adjust_length,
 			if (rute[f].value <= 180) {
 				run_config.max_speed = turn_speed;
 			} else {
-				run_config.tar_length = BLOCK_LENGTH;
+				run_config.tar_length = BLOCK_LENGTH*0.5f;
 				run_config.max_speed = turn_speed;
 				run_config.finish_speed = turn_speed;
 				straight(run_config);
 				run_config.max_speed = speed_buf;
-				run_config.tar_length = rute[f].value - BLOCK_LENGTH * 2;
+				run_config.tar_length = rute[f].value - BLOCK_LENGTH;
 				straight(run_config);
-				run_config.tar_length = BLOCK_LENGTH;
+				run_config.tar_length = BLOCK_LENGTH*0.5f;
 				run_config.max_speed = turn_speed;
 			}
 			if (f == i - 1) {

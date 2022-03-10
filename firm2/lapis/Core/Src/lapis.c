@@ -64,7 +64,7 @@ void lapis(void) {
 	AS5047_SetZeroPosition(ENC_R);
 	AS5047_SetZeroPosition(ENC_L);
 	init_control();
-	printf("lapis start\n");
+	printf("lapis start!!!!!!!!!!\n");
 	run_mode = NON_MODE;
 
 	if (batt_level > BATT_FULL) {
