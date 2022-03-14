@@ -36,7 +36,7 @@ typedef struct
 #define LS_TH 330
 
 #define RS_CON 400
-#define LS_CON 500
+#define LS_CON 450
 
 //LED PWM出力チャンネル
 //#define LED_TIM_HANDLE &htim3

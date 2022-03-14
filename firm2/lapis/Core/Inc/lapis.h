@@ -9,7 +9,7 @@
 #define INC_LAPIS_H_
 #include"main.h"
 //　機体パラメータ
-#define TIRE_DIAMETER   (14.25f)					//　タイヤの直径　52mm
+#define TIRE_DIAMETER   (14.2f)					//　タイヤの直径　52mm
 #define TIRE_CIRCUIT    (PI * TIRE_DIAMETER)	//　タイヤの円周 163.363mm
 #define TREAD_WIDTH     (38.0f)					//　トレッド幅　87.0mm(再計測)
 #define LAPIS_LENGTH (45.0f)

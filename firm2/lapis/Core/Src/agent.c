@@ -1060,7 +1060,7 @@ void saitan(RUNConfig run_config, TURNConfig turn_config, uint16_t gx,
 
 void saitan_s(RUNConfig run_config, TURNConfig turn_config, float adjust_length,
 		uint16_t gx, uint16_t gy, uint16_t sx, uint16_t sy, int8_t shead) {
-	RUTE rute[100] = { 0 };
+	RUTE rute[1024] = { 0 };
 	uint16_t x = sx, y = sy;
 	uint16_t i = 0;
 	int8_t temp_head = 0, head_buf = shead, temp_hed_prev = 4;
@@ -1320,7 +1320,7 @@ void saitan_s(RUNConfig run_config, TURNConfig turn_config, float adjust_length,
 //			}
 			run_config.tar_length = rute[f].value;
 
-			if (rute[f].value <= 180) {
+			if (rute[f].value <= BLOCK_LENGTH*2.0f) {
 				run_config.max_speed = turn_speed;
 			} else {
 				run_config.tar_length = BLOCK_LENGTH*0.5f;
@@ -1414,7 +1414,7 @@ void saitan_s(RUNConfig run_config, TURNConfig turn_config, float adjust_length,
 //	run_config.max_speed = 0.2f;
 	map_posX = gx;
 	map_posY = gy;
-	Delay_ms(500);
+	Delay_ms(100);
 	turn_u();
 	music();
 }
