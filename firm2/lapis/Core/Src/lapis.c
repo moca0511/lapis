@@ -837,7 +837,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 					+ speed_d * SPEED_KD;
 			volt_R += ang_p * ANG_KP + ang_i * ANG_KI + ang_d * ANG_KD;
 			volt_L -= ang_p * ANG_KP + ang_i * ANG_KI + ang_d * ANG_KD;
-			volt_R *= 1.1f;
+			volt_R *= 1.085f;
 			if (volt_R > 0) {
 				set_MR_direction(MOVE_FORWARD);
 			} else {

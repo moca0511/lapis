@@ -67,35 +67,6 @@ void adachi(RUNConfig run_config, TURNConfig turn_config, uint16_t gx,
 				run_config.acceleration = 5.0f;
 				straight(run_config);
 			}
-
-//			if (((((map[map_posX][map_posY].wall & 0x0f) | (map[map_posX][map_posY].wall << 4))
-//					<< head) & 0xc0) == 0xc0) {
-//				turn_config.dir = TURN_LEFT;
-//				turn(turn_config);
-//				chenge_head(turn_config.dir, turn_config.tar_deg, &head);
-//				sirituke();
-//				ajast();
-//				turn(turn_config);
-//				chenge_head(turn_config.dir, turn_config.tar_deg, &head);
-//				sirituke();
-//				ajast();
-//			} else if (((((map[map_posX][map_posY].wall & 0x0f)
-//					| (map[map_posX][map_posY].wall << 4)) << head) & 0x90) == 0x90) {
-//				turn_config.dir = TURN_RIGHT;
-//				turn(turn_config);
-//				chenge_head(turn_config.dir, turn_config.tar_deg, &head);
-//				sirituke();
-//				ajast();
-//				turn(turn_config);
-//				chenge_head(turn_config.dir, turn_config.tar_deg, &head);
-//				sirituke();
-//				ajast();
-//			} else if (((((map[map_posX][map_posY].wall & 0x0f)
-//					| (map[map_posX][map_posY].wall << 4)) << head) & 0x80) == 0x80) {
-//				turn_u();
-//				sirituke();
-//				ajast();
-//			}
 			turn_u();
 			printf("G\n");
 			break;
@@ -149,35 +120,6 @@ void adachi(RUNConfig run_config, TURNConfig turn_config, uint16_t gx,
 				run_config.acceleration = 5.0f;
 				straight(run_config);
 			}
-
-//			if (((((map[map_posX][map_posY].wall & 0x0f) | (map[map_posX][map_posY].wall << 4))
-//					<< head) & 0xc0) == 0xc0) {
-//				turn_config.dir = TURN_LEFT;
-//				turn(turn_config);
-//				chenge_head(turn_config.dir, turn_config.tar_deg, &head);
-//				sirituke();
-//				ajast();
-//				turn(turn_config);
-//				chenge_head(turn_config.dir, turn_config.tar_deg, &head);
-//				sirituke();
-//				ajast();
-//			} else if (((((map[map_posX][map_posY].wall & 0x0f)
-//					| (map[map_posX][map_posY].wall << 4)) << head) & 0x90) == 0x90) {
-//				turn_config.dir = TURN_RIGHT;
-//				turn(turn_config);
-//				chenge_head(turn_config.dir, turn_config.tar_deg, &head);
-//				sirituke();
-//				ajast();
-//				turn(turn_config);
-//				chenge_head(turn_config.dir, turn_config.tar_deg, &head);
-//				sirituke();
-//				ajast();
-//			} else if (((((map[map_posX][map_posY].wall & 0x0f)
-//					| (map[map_posX][map_posY].wall << 4)) << head) & 0x80) == 0x80) {
-//				turn_u();
-//				sirituke();
-//				ajast();
-//			}
 			break;
 		}
 
@@ -187,17 +129,12 @@ void adachi(RUNConfig run_config, TURNConfig turn_config, uint16_t gx,
 			temp_head -= 4;
 		}
 //		print_map();
-//		if (osMutexWait(UART_MutexHandle, 0U) == osOK) {
-//			printf("x:%d y:%d\n", map_posX, map_posY);
-//			osMutexRelease(UART_MutexHandle);
-//		}
+//		printf("x:%d y:%d\n", map_posX, map_posY);
 
 		switch (temp_head) {
 		case 0:
-//			if (osMutexWait(UART_MutexHandle, 0U) == osOK) {
-//				printf("S\n");
-//				osMutexRelease(UART_MutexHandle);
-//			}
+//			printf("S\n");
+
 			run_config.tar_length = BLOCK_LENGTH * 0.5;
 
 			if (move_f == -1) {    //中央から区切りへ
@@ -214,10 +151,8 @@ void adachi(RUNConfig run_config, TURNConfig turn_config, uint16_t gx,
 				straight(run_config);
 
 			}
-			/*			if (osMutexWait(UART_MutexHandle, 0U) == osOK) {
-			 printf("move_F:%d move:%d\n", move_f, move);
-			 osMutexRelease(UART_MutexHandle);
-			 }*/
+//			 printf("move_F:%d move:%d\n", move_f, move);
+
 			if ((move_f *= -1) == 1) {    //区切り
 				chenge_pos(1, &map_posX, &map_posY, head);
 				wall_set(0x03);
@@ -258,10 +193,8 @@ void adachi(RUNConfig run_config, TURNConfig turn_config, uint16_t gx,
 			break;
 		case 2:
 
-//			if (osMutexWait(UART_MutexHandle, 0U) == osOK) {
 //				printf("U\n");
-//				osMutexRelease(UART_MutexHandle);
-//			}
+
 			if (move_f == 1) {
 				run_config.finish_speed = 0;
 				run_config.tar_length = BLOCK_LENGTH * 0.5;
@@ -270,36 +203,6 @@ void adachi(RUNConfig run_config, TURNConfig turn_config, uint16_t gx,
 			move_f = -1;
 			Delay_ms(100);
 			turn_u();
-//			if (((((map[map_posX][map_posY].wall & 0x0f) | (map[map_posX][map_posY].wall << 4))
-//					<< head) & 0xc0) == 0xc0) {
-//				turn_config.dir = TURN_LEFT;
-//				turn(turn_config);
-//				chenge_head(turn_config.dir, turn_config.tar_deg, &head);
-//				sirituke();
-//				ajast();
-//				turn(turn_config);
-//				chenge_head(turn_config.dir, turn_config.tar_deg, &head);
-//				sirituke();
-//				ajast();
-//			} else if (((((map[map_posX][map_posY].wall & 0x0f)
-//					| (map[map_posX][map_posY].wall << 4)) << head) & 0x90) == 0x90) {
-//				turn_config.dir = TURN_RIGHT;
-//				turn(turn_config);
-//				chenge_head(turn_config.dir, turn_config.tar_deg, &head);
-//				sirituke();
-//				ajast();
-//				turn(turn_config);
-//				chenge_head(turn_config.dir, turn_config.tar_deg, &head);
-//				sirituke();
-//				ajast();
-//			} else if (((((map[map_posX][map_posY].wall & 0x0f)
-//					| (map[map_posX][map_posY].wall << 4)) << head) & 0x80) == 0x80) {
-//				turn_u();
-//				sirituke();
-//				ajast();
-//			} else {
-//				turn_u();
-//			}
 			run_config.finish_speed = speed_buf;
 			break;
 		case 3:
@@ -349,12 +252,9 @@ void adachi_s(RUNConfig run_config, TURNConfig turn_config, float adjust_length,
 
 	for (;;) {
 		if (map[gx][gy].wall == 0xff) {
-//			motor_stop();
 			if (move_f == 1) {    //中央に移動
-//				run_config.max_speed = 0.2f;
 				run_config.tar_length = BLOCK_LENGTH * 0.5f;
 				run_config.finish_speed = 0.0f;
-//				run_config.acceleration = 5.0f;
 				straight(run_config);
 			}
 			printf("can't to goal\n");
@@ -363,41 +263,11 @@ void adachi_s(RUNConfig run_config, TURNConfig turn_config, float adjust_length,
 
 		if (map_posX == gx && map_posY == gy) {
 			if (move_f == 1) {    //中央に移動
-//				run_config.max_speed = 0.2f;
 				run_config.tar_length = BLOCK_LENGTH * 0.5f;
 				run_config.finish_speed = 0.0f;
-//				run_config.acceleration = 5.0f;
 				straight(run_config);
 			}
 
-//			if (((((map[map_posX][map_posY].wall & 0x0f) | (map[map_posX][map_posY].wall << 4))
-//					<< head) & 0xc0) == 0xc0) {
-//				turn_config.dir = TURN_LEFT;
-//				turn(turn_config);
-//				chenge_head(turn_config.dir, turn_config.tar_deg, &head);
-//				sirituke();
-//				ajast();
-//				turn(turn_config);
-//				chenge_head(turn_config.dir, turn_config.tar_deg, &head);
-//				sirituke();
-//				ajast();
-//			} else if (((((map[map_posX][map_posY].wall & 0x0f)
-//					| (map[map_posX][map_posY].wall << 4)) << head) & 0x90) == 0x90) {
-//				turn_config.dir = TURN_RIGHT;
-//				turn(turn_config);
-//				chenge_head(turn_config.dir, turn_config.tar_deg, &head);
-//				sirituke();
-//				ajast();
-//				turn(turn_config);
-//				chenge_head(turn_config.dir, turn_config.tar_deg, &head);
-//				sirituke();
-//				ajast();
-//			} else if (((((map[map_posX][map_posY].wall & 0x0f)
-//					| (map[map_posX][map_posY].wall << 4)) << head) & 0x80) == 0x80) {
-//				turn_u();
-//				sirituke();
-//				ajast();
-//			}
 			turn_u();
 			printf("G\n");
 			break;
@@ -451,35 +321,6 @@ void adachi_s(RUNConfig run_config, TURNConfig turn_config, float adjust_length,
 				run_config.acceleration = 5.0f;
 				straight(run_config);
 			}
-
-//			if (((((map[map_posX][map_posY].wall & 0x0f) | (map[map_posX][map_posY].wall << 4))
-//					<< head) & 0xc0) == 0xc0) {
-//				turn_config.dir = TURN_LEFT;
-//				turn(turn_config);
-//				chenge_head(turn_config.dir, turn_config.tar_deg, &head);
-//				sirituke();
-//				ajast();
-//				turn(turn_config);
-//				chenge_head(turn_config.dir, turn_config.tar_deg, &head);
-//				sirituke();
-//				ajast();
-//			} else if (((((map[map_posX][map_posY].wall & 0x0f)
-//					| (map[map_posX][map_posY].wall << 4)) << head) & 0x90) == 0x90) {
-//				turn_config.dir = TURN_RIGHT;
-//				turn(turn_config);
-//				chenge_head(turn_config.dir, turn_config.tar_deg, &head);
-//				sirituke();
-//				ajast();
-//				turn(turn_config);
-//				chenge_head(turn_config.dir, turn_config.tar_deg, &head);
-//				sirituke();
-//				ajast();
-//			} else if (((((map[map_posX][map_posY].wall & 0x0f)
-//					| (map[map_posX][map_posY].wall << 4)) << head) & 0x80) == 0x80) {
-//				turn_u();
-//				sirituke();
-//				ajast();
-//			}
 			break;
 		}
 
@@ -489,17 +330,12 @@ void adachi_s(RUNConfig run_config, TURNConfig turn_config, float adjust_length,
 			temp_head -= 4;
 		}
 //		print_map();
-//		if (osMutexWait(UART_MutexHandle, 0U) == osOK) {
-//			printf("x:%d y:%d\n", map_posX, map_posY);
-//			osMutexRelease(UART_MutexHandle);
-//		}
+//		printf("x:%d y:%d\n", map_posX, map_posY);
 
 		switch (temp_head) {
 		case 0:
-//			if (osMutexWait(UART_MutexHandle, 0U) == osOK) {
 //				printf("S\n");
-//				osMutexRelease(UART_MutexHandle);
-//			}
+
 			run_config.tar_length = BLOCK_LENGTH * 0.5;
 
 			if (move_f == -1) {    //中央から区切りへ
@@ -516,10 +352,8 @@ void adachi_s(RUNConfig run_config, TURNConfig turn_config, float adjust_length,
 				straight(run_config);
 
 			}
-			/*			if (osMutexWait(UART_MutexHandle, 0U) == osOK) {
-			 printf("move_F:%d move:%d\n", move_f, move);
-			 osMutexRelease(UART_MutexHandle);
-			 }*/
+//			 printf("move_F:%d move:%d\n", move_f, move);
+
 			if ((move_f *= -1) == 1) {    //区切り
 				chenge_pos(1, &map_posX, &map_posY, head);
 				wall_set(0x03);
@@ -537,20 +371,6 @@ void adachi_s(RUNConfig run_config, TURNConfig turn_config, float adjust_length,
 				chenge_head(turn_config.dir, turn_config.tar_deg, &head);
 				turn_config.speed = run_config.finish_speed = speed_buf;
 			} else {
-//				run_config.finish_speed = 0;
-//				straight(run_config);
-//				if (((((map[map_posX][map_posY].wall & 0x0f)
-//						| (map[map_posX][map_posY].wall << 4)) << head) & 0x80)
-//						== 0x80) {
-//					tone(tone_hiC, 10);
-//					front_adjust();
-//				}
-//				turn_config.dir = TURN_RIGHT;
-//				Delay_ms(100);
-//				turn(turn_config);
-//				Delay_ms(100);
-//				run_config.finish_speed = speed_buf;
-//				straight(run_config);
 				run_config.tar_length = adjust_length;
 				turn_config.dir = TURN_RIGHT;
 				straight(run_config);
@@ -567,10 +387,8 @@ void adachi_s(RUNConfig run_config, TURNConfig turn_config, float adjust_length,
 			break;
 		case 2:
 
-//			if (osMutexWait(UART_MutexHandle, 0U) == osOK) {
 //				printf("U\n");
-//				osMutexRelease(UART_MutexHandle);
-//			}
+
 			if (move_f == 1) {
 				run_config.finish_speed = 0;
 				run_config.tar_length = BLOCK_LENGTH * 0.5;
@@ -579,36 +397,6 @@ void adachi_s(RUNConfig run_config, TURNConfig turn_config, float adjust_length,
 			move_f = -1;
 			Delay_ms(100);
 			turn_u();
-//			if (((((map[map_posX][map_posY].wall & 0x0f) | (map[map_posX][map_posY].wall << 4))
-//					<< head) & 0xc0) == 0xc0) {
-//				turn_config.dir = TURN_LEFT;
-//				turn(turn_config);
-//				chenge_head(turn_config.dir, turn_config.tar_deg, &head);
-//				sirituke();
-//				ajast();
-//				turn(turn_config);
-//				chenge_head(turn_config.dir, turn_config.tar_deg, &head);
-//				sirituke();
-//				ajast();
-//			} else if (((((map[map_posX][map_posY].wall & 0x0f)
-//					| (map[map_posX][map_posY].wall << 4)) << head) & 0x90) == 0x90) {
-//				turn_config.dir = TURN_RIGHT;
-//				turn(turn_config);
-//				chenge_head(turn_config.dir, turn_config.tar_deg, &head);
-//				sirituke();
-//				ajast();
-//				turn(turn_config);
-//				chenge_head(turn_config.dir, turn_config.tar_deg, &head);
-//				sirituke();
-//				ajast();
-//			} else if (((((map[map_posX][map_posY].wall & 0x0f)
-//					| (map[map_posX][map_posY].wall << 4)) << head) & 0x80) == 0x80) {
-//				turn_u();
-//				sirituke();
-//				ajast();
-//			} else {
-//				turn_u();
-//			}
 			run_config.finish_speed = speed_buf;
 			break;
 		case 3:
@@ -621,20 +409,6 @@ void adachi_s(RUNConfig run_config, TURNConfig turn_config, float adjust_length,
 				chenge_head(turn_config.dir, turn_config.tar_deg, &head);
 				turn_config.speed = run_config.finish_speed = speed_buf;
 			} else {
-//				run_config.finish_speed = 0;
-//				straight(run_config);
-//				if (((((map[map_posX][map_posY].wall & 0x0f)
-//						| (map[map_posX][map_posY].wall << 4)) << head) & 0x80)
-//						== 0x80) {
-//					tone(tone_hiC, 10);
-//					front_adjust();
-//				}
-//				turn_config.dir = TURN_LEFT;
-//				Delay_ms(100);
-//				turn(turn_config);
-//				Delay_ms(100);
-//				run_config.finish_speed = speed_buf;
-//				straight(run_config);
 				run_config.tar_length = adjust_length;
 				turn_config.dir = TURN_LEFT;
 				straight(run_config);
@@ -651,70 +425,7 @@ void adachi_s(RUNConfig run_config, TURNConfig turn_config, float adjust_length,
 		}
 	}
 }
-/*void hidarite(void) {
- RUNConfig run_config = { MOVE_FORWARD, 0, 300, 300, 1000, BLOCK_LENGTH };
- RUNConfig turn_config = { TURN_RIGHT, 0, 200, 300, 2000, 90 };
- if (osMutexWait(UART_MutexHandle, 0U) == osOK) {
- printf("hidarite\n");
- osMutexRelease(UART_MutexHandle);
- }
 
- Delay_ms(500);
- //wall_calibration();
- tone(tone_hiC, 10);
- //	osThreadFlagsSet(Sensor_TaskHandle, TASK_START);
- Delay_ms(10);
- for (;;) {
-
- //print_map();
- if (HAL_GPIO_ReadPin(OK_GPIO_Port, OK_Pin) == 0) {
- motor_stop();
- //			osThreadFlagsSet(Sensor_TaskHandle, TASK_STOP);
- while (HAL_GPIO_ReadPin(OK_GPIO_Port, OK_Pin) == 0) {
- Delay_ms(100);
- }
- tone(tone_hiC, 200);
- break;
- }
- //osThreadFlagsSet(Sensor_TaskHandle, TASK_STOP);
- wall_set(0x03);
- //		make_smap(goalX, goalY, game_mode);
- print_map();
- //osThreadFlagsSet(Sensor_TaskHandle, TASK_START);
-
- if (wall_check(1) == 0) {
- //	printf("TURNL\n");
- turn_config.initial_speed = (MotorSPEED_L + MotorSPEED_R) / 2;
- turn_config.dir = TURN_LEFT;
- turn(turn_config);
- chenge_head(turn_config.dir, turn_config.tar_deg, &head);
- run_config.initial_speed = (MotorSPEED_L + MotorSPEED_R) / 2;
- straight(run_config);
- chenge_pos(1,&map_posX,&map_posY,head);
- } else if (wall_check(0) == 0) {
- run_config.initial_speed = (MotorSPEED_L + MotorSPEED_R) / 2;
- //	printf("straight\n");
- straight(run_config);
- chenge_pos(1,&map_posX,&map_posY,head);
- } else if (wall_check(2) == 0) {
- //	printf("TURN R\n");
- //			run_config.tar_length = (BLOCK_LENGTH - NEZUTAKA_LENGTH) / 3;
- //			straight(run_config);
- turn_config.initial_speed = (MotorSPEED_L + MotorSPEED_R) / 2;
- turn_config.dir = TURN_RIGHT;
- turn(turn_config);
- chenge_head(turn_config.dir, turn_config.tar_deg, &head);
- run_config.initial_speed = (MotorSPEED_L + MotorSPEED_R) / 2;
- straight(run_config);
- chenge_pos(1,&map_posX,&map_posY,head);
- } else {
- //	printf("U\n");
- turn_u();
- }
-
- tone(tone_hiC, 100);
- }
- }*/
 //
 /*
  * 説明：最短走行
@@ -1320,17 +1031,17 @@ void saitan_s(RUNConfig run_config, TURNConfig turn_config, float adjust_length,
 //			}
 			run_config.tar_length = rute[f].value;
 
-			if (rute[f].value <= BLOCK_LENGTH*2.0f) {
+			if (rute[f].value <= BLOCK_LENGTH * 2.0f) {
 				run_config.max_speed = turn_speed;
 			} else {
-				run_config.tar_length = BLOCK_LENGTH*0.5f;
+				run_config.tar_length = BLOCK_LENGTH * 0.5f;
 				run_config.max_speed = turn_speed;
 				run_config.finish_speed = turn_speed;
 				straight(run_config);
 				run_config.max_speed = speed_buf;
 				run_config.tar_length = rute[f].value - BLOCK_LENGTH;
 				straight(run_config);
-				run_config.tar_length = BLOCK_LENGTH*0.5f;
+				run_config.tar_length = BLOCK_LENGTH * 0.5f;
 				run_config.max_speed = turn_speed;
 			}
 			if (f == i - 1) {

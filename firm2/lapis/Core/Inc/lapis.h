@@ -55,11 +55,11 @@ typedef struct
 //　最大速度
 #define MAX_SPEED (3.0f)
 #define MIN_SPEED (0.1f)
-#define SPEED_KP (7.0f)
+#define SPEED_KP (6.5f)
 #define SPEED_KI (0.1f)
 #define SPEED_KD (0.5f)
 #define ANG_KP (0.28f)
-#define ANG_KI (0.0027f)
+#define ANG_KI (0.0025f)
 #define ANG_KD (0.01f)
 #define CON_WALL_KP (0.0003f)
 #define CON_FWALL_KP (0.003f)
