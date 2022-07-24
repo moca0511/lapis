@@ -13,6 +13,7 @@
 #include"run.h"
 #include "maze.h"
 #include"agent.h"
+#include"adc.h"
 
 extern MAP map[MAP_X_MAX][MAP_Y_MAX];
 extern int16_t map_posX, map_posY;	//　現在の位置
@@ -135,7 +136,7 @@ void adachi(RUNConfig run_config, TURNConfig turn_config, uint16_t gx,
 		case 0:
 //			printf("S\n");
 
-			run_config.tar_length = BLOCK_LENGTH * 0.5;
+			run_config.tar_length = BLOCK_LENGTH * 0.5f;
 
 			if (move_f == -1) {    //中央から区切りへ
 				run_config.finish_speed = speed_buf;
@@ -147,7 +148,7 @@ void adachi(RUNConfig run_config, TURNConfig turn_config, uint16_t gx,
 					run_config.acceleration = 5.0f;
 					run_config.tar_length = BLOCK_LENGTH / 2;
 				}
-				run_config.finish_speed = 0.3;
+				run_config.finish_speed = 0.3f;
 				straight(run_config);
 
 			}
@@ -268,7 +269,10 @@ void adachi_s(RUNConfig run_config, TURNConfig turn_config, float adjust_length,
 				straight(run_config);
 			}
 
-			turn_u();
+//			turn_u();
+			if (get_sensor_iswall(RF) || get_sensor_iswall(LF)) {
+				front_adjust();
+			}
 			printf("G\n");
 			break;
 		}
@@ -348,7 +352,7 @@ void adachi_s(RUNConfig run_config, TURNConfig turn_config, float adjust_length,
 					run_config.acceleration = 5.0f;
 					run_config.tar_length = BLOCK_LENGTH / 2;
 				}
-				run_config.finish_speed = 0.3;
+				run_config.finish_speed = speed_buf;
 				straight(run_config);
 
 			}
@@ -373,7 +377,18 @@ void adachi_s(RUNConfig run_config, TURNConfig turn_config, float adjust_length,
 			} else {
 				run_config.tar_length = adjust_length;
 				turn_config.dir = TURN_RIGHT;
-				straight(run_config);
+				if (get_sensor_iswall(RF) && get_sensor_iswall(LF)) {
+					LED(15);
+					while (1) {
+						if (get_sensordata(RF) >= 150
+								&& get_sensordata(LF) >= 150) {
+							break;
+						}
+					}
+				} else {
+					LED(0);
+					straight(run_config);
+				}
 				turn(turn_config);
 				straight(run_config);
 				run_config.tar_length = BLOCK_LENGTH * 0.5f;
@@ -411,7 +426,18 @@ void adachi_s(RUNConfig run_config, TURNConfig turn_config, float adjust_length,
 			} else {
 				run_config.tar_length = adjust_length;
 				turn_config.dir = TURN_LEFT;
-				straight(run_config);
+				if (get_sensor_iswall(RF) && get_sensor_iswall(LF)) {
+					LED(15);
+					while (1) {
+						if (get_sensordata(RF) >= 150
+								&& get_sensordata(LF) >= 150) {
+							break;
+						}
+					}
+				} else {
+					LED(0);
+					straight(run_config);
+				}
 				turn(turn_config);
 				straight(run_config);
 				run_config.tar_length = BLOCK_LENGTH * 0.5f;
@@ -425,6 +451,427 @@ void adachi_s(RUNConfig run_config, TURNConfig turn_config, float adjust_length,
 		}
 	}
 }
+
+void sarch_all(RUNConfig run_config, TURNConfig turn_config,
+		float adjust_length) {
+	//現在地から一番近い未探索区画をゴールに設定
+	uint16_t go_x, go_y;
+	uint8_t temp_head = 0;
+	float speed_buf = run_config.finish_speed;
+	int8_t move_f = -1;
+	int8_t remenber = 1;
+
+	while (get_unknow_block(&go_x, &go_y)) {
+		LED(go_x * go_y);
+		//そこに足立法で移動
+		for (;;) {
+			if (map[go_x][go_y].wall == 0xff) {
+				break;
+			}
+
+			if (map_posX == go_x && map_posY == go_y) {
+				break;
+			}
+
+			temp_head = 99;
+			remenber = 99;
+			if ((map[map_posX][map_posY].wall & 0x22) == 0x20
+					&& map[map_posX][map_posY].step
+							> map[map_posX][map_posY - 1].step) {
+				temp_head = 2;
+				if ((map[map_posX][map_posY - 1].wall & 0xf0) != 0xf0) {
+					remenber = 2;
+				}
+			}
+
+			if ((map[map_posX][map_posY].wall & 0x44) == 0x40
+					&& map[map_posX][map_posY].step
+							> map[map_posX + 1][map_posY].step) {
+				temp_head = 1;
+				if ((map[map_posX + 1][map_posY].wall & 0xf0) != 0xf0) {
+					remenber = 1;
+				}
+			}
+			if ((map[map_posX][map_posY].wall & 0x11) == 0x10
+					&& map[map_posX][map_posY].step
+							> map[map_posX - 1][map_posY].step) {
+				temp_head = 3;
+				if ((map[map_posX - 1][map_posY].wall & 0xf0) != 0xf0) {
+					remenber = 3;
+				}
+			}
+			if ((map[map_posX][map_posY].wall & 0x88) == 0x80
+					&& map[map_posX][map_posY].step
+							> map[map_posX][map_posY + 1].step) {
+				temp_head = 0;
+				if ((map[map_posX][map_posY + 1].wall & 0xf0) != 0xf0) {
+					remenber = 0;
+				}
+			}
+			if (remenber != 99) {
+				temp_head = remenber;
+			}
+			if (temp_head == 99) {
+				printf("err\n");
+				break;
+			}
+
+			temp_head += 4;         //マイナス数防止
+			temp_head -= head;    //headの考慮
+			if (temp_head >= 4) {    //桁上がりの考慮
+				temp_head -= 4;
+			}
+			//		print_map();
+			//		printf("x:%d y:%d\n", map_posX, map_posY);
+
+			switch (temp_head) {
+			case 0:
+				//				printf("S\n");
+
+				run_config.tar_length = BLOCK_LENGTH * 0.5;
+
+				if (move_f == -1) {    //中央から区切りへ
+					run_config.finish_speed = speed_buf;
+					straight(run_config);
+				} else {    //区切りから中央へ
+					if (map_posX == go_x && map_posY == go_y) {
+						break;
+					}
+					run_config.finish_speed = speed_buf;
+					straight(run_config);
+
+				}
+				//			 printf("move_F:%d move:%d\n", move_f, move);
+
+				if ((move_f *= -1) == 1) {    //区切り
+					chenge_pos(1, &map_posX, &map_posY, head);
+					wall_set(0x03);
+					wall_set_around();
+				}
+
+				break;
+			case 1:
+				if (move_f == -1) {
+					turn_config.dir = TURN_RIGHT;
+					turn_config.speed = 0;
+					Delay_ms(100);
+					turn(turn_config);
+					Delay_ms(100);
+					chenge_head(turn_config.dir, turn_config.tar_deg, &head);
+					turn_config.speed = run_config.finish_speed = speed_buf;
+				} else {
+					run_config.tar_length = adjust_length;
+					turn_config.dir = TURN_RIGHT;
+					if (get_sensor_iswall(RF) && get_sensor_iswall(LF)) {
+//						LED(15);
+						while (1) {
+							if (get_sensordata(RF) >= 150
+									&& get_sensordata(LF) >= 150) {
+								break;
+							}
+						}
+					} else {
+//						LED(0);
+						straight(run_config);
+					}
+					turn(turn_config);
+					straight(run_config);
+					run_config.tar_length = BLOCK_LENGTH * 0.5f;
+					chenge_head(turn_config.dir, turn_config.tar_deg, &head);
+					chenge_pos(1, &map_posX, &map_posY, head);
+					wall_set(0x03);
+					wall_set_around();
+					move_f = 1;
+				}
+
+				break;
+			case 2:
+
+				//				printf("U\n");
+
+				if (move_f == 1) {
+					run_config.finish_speed = 0;
+					run_config.tar_length = BLOCK_LENGTH * 0.5;
+					straight(run_config);
+				}
+				move_f = -1;
+				Delay_ms(100);
+				turn_u();
+				run_config.finish_speed = speed_buf;
+				break;
+			case 3:
+				if (move_f == -1) {
+					turn_config.dir = TURN_LEFT;
+					turn_config.speed = 0;
+					Delay_ms(100);
+					turn(turn_config);
+					Delay_ms(100);
+					chenge_head(turn_config.dir, turn_config.tar_deg, &head);
+					turn_config.speed = run_config.finish_speed = speed_buf;
+				} else {
+					run_config.tar_length = adjust_length;
+					turn_config.dir = TURN_LEFT;
+					if (get_sensor_iswall(RF) && get_sensor_iswall(LF)) {
+//						LED(15);
+						while (1) {
+							if (get_sensordata(RF) >= 150
+									&& get_sensordata(LF) >= 150) {
+								break;
+							}
+						}
+					} else {
+//						LED(0);
+						straight(run_config);
+					}
+					turn(turn_config);
+					straight(run_config);
+					run_config.tar_length = BLOCK_LENGTH * 0.5f;
+					chenge_head(turn_config.dir, turn_config.tar_deg, &head);
+					chenge_pos(1, &map_posX, &map_posY, head);
+					wall_set(0x03);
+					wall_set_around();
+					move_f = 1;
+				}
+
+			}
+		}
+//		if (move_f == 1 && (get_sensor_iswall(RF) && get_sensor_iswall(LF))) { //中央に移動
+//			run_config.tar_length = BLOCK_LENGTH * 0.5f;
+//			run_config.finish_speed = 0.0f;
+//			straight(run_config);
+//			front_adjust();
+//			move_f *= -1;
+//		}
+	}
+	if (move_f == 1) { //中央に移動
+		run_config.tar_length = BLOCK_LENGTH * 0.5f;
+		run_config.finish_speed = 0.0f;
+		straight(run_config);
+		if (get_sensor_iswall(RF) && get_sensor_iswall(LF)) {
+			front_adjust();
+		}
+		move_f *= -1;
+	}
+
+	//壁が埋まれば次の未探索区画へ
+	//未探索区画がなくなったら終了
+}
+
+//void sarch_all(RUNConfig run_config, TURNConfig turn_config,
+//		float adjust_length) {
+//	//現在地から一番近い未探索区画をゴールに設定
+//	uint16_t go_x = MAP_X_MAX, go_y = MAP_Y_MAX;
+//	uint8_t temp_head = 0;
+//	float speed_buf = run_config.finish_speed;
+//	int8_t move_f = -1;
+//	int8_t remenber = 1;
+//	//そこに足立法で移動
+//	for (;;) {
+//
+//		temp_head = 99;
+//		remenber = 99;
+//		if ((map[map_posX][map_posY].wall & 0x22) == 0x20) {
+//			if ((map[map_posX][map_posY - 1].wall & 0xf0) != 0xf0) {
+//				remenber = 2;
+//			}
+//		}
+//
+//		if ((map[map_posX][map_posY].wall & 0x44) == 0x40) {
+//			if ((map[map_posX + 1][map_posY].wall & 0xf0) != 0xf0) {
+//				remenber = 1;
+//			}
+//		}
+//		if ((map[map_posX][map_posY].wall & 0x11) == 0x10) {
+//			if ((map[map_posX - 1][map_posY].wall & 0xf0) != 0xf0) {
+//				remenber = 3;
+//			}
+//		}
+//		if ((map[map_posX][map_posY].wall & 0x88) == 0x80) {
+//			if ((map[map_posX][map_posY + 1].wall & 0xf0) != 0xf0) {
+//				remenber = 0;
+//			}
+//		}
+//
+//		if (remenber == 99) {
+////			if((map[go_x][go_y].wall & 0xf0) != 0xf0){
+//			if (move_f == 1
+//					&& (get_sensor_iswall(RF) || get_sensor_iswall(LF))) { //中央に移動
+//				run_config.tar_length = BLOCK_LENGTH * 0.5f;
+//				run_config.finish_speed = 0.0f;
+//				straight(run_config);
+//				front_adjust();
+//				move_f *= -1;
+//			}
+//			if (get_unknow_block(&go_x, &go_y) == false) {
+//				music();
+//				break;
+//			}
+////			}
+//			if ((map[map_posX][map_posY].wall & 0x22) == 0x20
+//					&& map[map_posX][map_posY].step
+//							> map[map_posX][map_posY - 1].step) {
+//				temp_head = 2;
+//				if ((map[map_posX][map_posY - 1].wall & 0xf0) != 0xf0) {
+//					remenber = 2;
+//				}
+//			}
+//
+//			if ((map[map_posX][map_posY].wall & 0x44) == 0x40
+//					&& map[map_posX][map_posY].step
+//							> map[map_posX + 1][map_posY].step) {
+//				temp_head = 1;
+//				if ((map[map_posX + 1][map_posY].wall & 0xf0) != 0xf0) {
+//					remenber = 1;
+//				}
+//			}
+//			if ((map[map_posX][map_posY].wall & 0x11) == 0x10
+//					&& map[map_posX][map_posY].step
+//							> map[map_posX - 1][map_posY].step) {
+//				temp_head = 3;
+//				if ((map[map_posX - 1][map_posY].wall & 0xf0) != 0xf0) {
+//					remenber = 3;
+//				}
+//			}
+//			if ((map[map_posX][map_posY].wall & 0x88) == 0x80
+//					&& map[map_posX][map_posY].step
+//							> map[map_posX][map_posY + 1].step) {
+//				temp_head = 0;
+//				if ((map[map_posX][map_posY + 1].wall & 0xf0) != 0xf0) {
+//					remenber = 0;
+//				}
+//			}
+//		}
+//		if (remenber != 99) {
+//			temp_head = remenber;
+//		}
+//		if (temp_head == 99) {
+//			map[go_x][go_y].wall = 0xff;
+//			continue;
+//		}
+//
+//		temp_head += 4;         //マイナス数防止
+//		temp_head -= head;    //headの考慮
+//		if (temp_head >= 4) {    //桁上がりの考慮
+//			temp_head -= 4;
+//		}
+//		//		print_map();
+//		//		printf("x:%d y:%d\n", map_posX, map_posY);
+//
+//		switch (temp_head) {
+//		case 0:
+//			//				printf("S\n");
+//
+//			run_config.tar_length = BLOCK_LENGTH * 0.5;
+//
+//			if (move_f == -1) {    //中央から区切りへ
+//				run_config.finish_speed = speed_buf;
+//				straight(run_config);
+//			} else {    //区切りから中央へ
+//				if (map_posX == go_x && map_posY == go_y) {
+//					break;
+//				}
+//				run_config.finish_speed = speed_buf;
+//				straight(run_config);
+//
+//			}
+//			//			 printf("move_F:%d move:%d\n", move_f, move);
+//
+//			if ((move_f *= -1) == 1) {    //区切り
+//				chenge_pos(1, &map_posX, &map_posY, head);
+//				wall_set(0x03);
+//				wall_set_around();
+//			}
+//
+//			break;
+//		case 1:
+//			if (move_f == -1) {
+//				turn_config.dir = TURN_RIGHT;
+//				turn_config.speed = 0;
+//				Delay_ms(100);
+//				turn(turn_config);
+//				Delay_ms(100);
+//				chenge_head(turn_config.dir, turn_config.tar_deg, &head);
+//				turn_config.speed = run_config.finish_speed = speed_buf;
+//			} else {
+//				run_config.tar_length = adjust_length;
+//				turn_config.dir = TURN_RIGHT;
+//				if (get_sensor_iswall(RF) && get_sensor_iswall(LF)) {
+//					LED(15);
+//					while (1) {
+//						if (get_sensordata(RF) >= 150
+//								&& get_sensordata(LF) >= 150) {
+//							break;
+//						}
+//					}
+//				} else {
+//					LED(0);
+//					straight(run_config);
+//				}
+//				turn(turn_config);
+//				straight(run_config);
+//				run_config.tar_length = BLOCK_LENGTH * 0.5f;
+//				chenge_head(turn_config.dir, turn_config.tar_deg, &head);
+//				chenge_pos(1, &map_posX, &map_posY, head);
+//				wall_set(0x03);
+//				wall_set_around();
+//				move_f = 1;
+//			}
+//
+//			break;
+//		case 2:
+//
+//			//				printf("U\n");
+//
+//			if (move_f == 1) {
+//				run_config.finish_speed = 0;
+//				run_config.tar_length = BLOCK_LENGTH * 0.5;
+//				straight(run_config);
+//			}
+//			move_f = -1;
+//			Delay_ms(100);
+//			turn_u();
+//			run_config.finish_speed = speed_buf;
+//			break;
+//		case 3:
+//			if (move_f == -1) {
+//				turn_config.dir = TURN_LEFT;
+//				turn_config.speed = 0;
+//				Delay_ms(100);
+//				turn(turn_config);
+//				Delay_ms(100);
+//				chenge_head(turn_config.dir, turn_config.tar_deg, &head);
+//				turn_config.speed = run_config.finish_speed = speed_buf;
+//			} else {
+//				run_config.tar_length = adjust_length;
+//				turn_config.dir = TURN_LEFT;
+//				if (get_sensor_iswall(RF) && get_sensor_iswall(LF)) {
+//					LED(15);
+//					while (1) {
+//						if (get_sensordata(RF) >= 150
+//								&& get_sensordata(LF) >= 150) {
+//							break;
+//						}
+//					}
+//				} else {
+//					LED(0);
+//					straight(run_config);
+//				}
+//				turn(turn_config);
+//				straight(run_config);
+//				run_config.tar_length = BLOCK_LENGTH * 0.5f;
+//				chenge_head(turn_config.dir, turn_config.tar_deg, &head);
+//				chenge_pos(1, &map_posX, &map_posY, head);
+//				wall_set(0x03);
+//				wall_set_around();
+//				move_f = 1;
+//			}
+//
+//		}
+//	}
+//
+//	//壁が埋まれば次の未探索区画へ
+//	//未探索区画がなくなったら終了
+//}
 
 //
 /*
@@ -1031,18 +1478,18 @@ void saitan_s(RUNConfig run_config, TURNConfig turn_config, float adjust_length,
 //			}
 			run_config.tar_length = rute[f].value;
 
-			if (rute[f].value <= BLOCK_LENGTH * 2.0f) {
+			if (rute[f].value <= BLOCK_LENGTH * 1.0f) {
 				run_config.max_speed = turn_speed;
 			} else {
-				run_config.tar_length = BLOCK_LENGTH * 0.5f;
-				run_config.max_speed = turn_speed;
-				run_config.finish_speed = turn_speed;
-				straight(run_config);
+//				run_config.tar_length = BLOCK_LENGTH * 0.5f;
+//				run_config.max_speed = turn_speed;
+//				run_config.finish_speed = turn_speed;
+//				straight(run_config);
 				run_config.max_speed = speed_buf;
-				run_config.tar_length = rute[f].value - BLOCK_LENGTH;
-				straight(run_config);
-				run_config.tar_length = BLOCK_LENGTH * 0.5f;
-				run_config.max_speed = turn_speed;
+//				run_config.tar_length = rute[f].value - BLOCK_LENGTH;
+//				straight(run_config);
+//				run_config.tar_length = BLOCK_LENGTH * 0.5f;
+//				run_config.max_speed = turn_speed;
 			}
 			if (f == i - 1) {
 				run_config.finish_speed = 0;
@@ -1077,6 +1524,17 @@ void saitan_s(RUNConfig run_config, TURNConfig turn_config, float adjust_length,
 //					tone(tone_hiC, 10);
 //					front_adjust();
 //				}
+				if (get_sensor_iswall(RF) && get_sensor_iswall(LF)) {
+//					LED(15);
+					while (1) {
+						if (get_sensordata(RF) >= 150
+								&& get_sensordata(LF) >= 150) {
+							break;
+						}
+					}
+				} else {
+//					LED(0);
+				}
 				turn_config.dir = TURN_RIGHT;
 //				Delay_ms(100);
 				turn(turn_config);
@@ -1111,6 +1569,17 @@ void saitan_s(RUNConfig run_config, TURNConfig turn_config, float adjust_length,
 //					tone(tone_hiC, 10);
 //					front_adjust();
 //				}
+				if (get_sensor_iswall(RF) && get_sensor_iswall(LF)) {
+//					LED(15);
+					while (1) {
+						if (get_sensordata(RF) >= 150
+								&& get_sensordata(LF) >= 150) {
+							break;
+						}
+					}
+				} else {
+//					LED(0);
+				}
 				turn_config.dir = TURN_LEFT;
 //				Delay_ms(100);
 				turn(turn_config);

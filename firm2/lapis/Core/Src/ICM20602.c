@@ -270,7 +270,7 @@ float icm20602_get_temp() {
 }
 
 void icm20602_get_deg(float *degree, float gyro, float gyro_prev, float t) {
-	*degree += t * (gyro * 0.8f + gyro_prev * 0.2f);
+	*degree += t * (gyro_prev +  (gyro - gyro_prev)* 0.1f);
 //	if (*degree > 360.0f) {
 //		*degree -= 360.0f;
 //	}

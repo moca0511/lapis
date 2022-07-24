@@ -8,12 +8,13 @@
 #ifndef INC_MAZE_H_
 #define INC_MAZE_H_
 #include"main.h"
+#include"lapis.h"
 
 #define MAP_X_MAX (16)
 #define MAP_Y_MAX (16)
 #define MAP_SIZE	(MAP_X_MAX*MAP_Y_MAX)	//　マップマスの数
-#define GOAL_X (6)
-#define GOAL_Y (9)
+#define GOAL_X (3)
+#define GOAL_Y (3)
 #define START_X (0)
 #define START_Y (0)
 #define GOAL (GOAL_Y * MAP_X_MAX + GOAL_X) //ｓゴールの添え字
@@ -29,6 +30,7 @@ typedef enum {
 typedef struct MAP {
 	uint8_t step;	//ゴールまでの距離
 	uint8_t wall;	//北東南西北東南西　上位4bit:探索確認(1:探索済み　0:未探索)　下位4bit:壁の有無(1:壁あり0:壁なし)
+	t_bool check;
 } MAP;
 
 void smap_Init(void);  // 歩数マップ初期化
@@ -44,6 +46,7 @@ void maze_load(void);//迷路情報読み出し
 void chenge_pos(int16_t block, int16_t *temp_posX, int16_t *temp_posY,
 		int8_t temp_head);
 void chenge_head(uint16_t direction, uint32_t value, int8_t *head_buf);
+t_bool get_unknow_block(uint16_t *x, uint16_t *y);
 
 
 #endif /* INC_MAZE_H_ */

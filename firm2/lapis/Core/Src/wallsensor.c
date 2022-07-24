@@ -135,7 +135,7 @@ t_bool get_sensor_iscontrol(uint8_t select) {
 int16_t get_sensor_error(uint8_t select) {
 	switch (select) {
 	case RS:
-		return sensorData[RS].error *1.5f;
+		return sensorData[RS].error;
 	case RF:
 		return sensorData[RF].error;
 	case LS:

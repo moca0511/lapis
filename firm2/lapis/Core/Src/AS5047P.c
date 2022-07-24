@@ -152,14 +152,14 @@ float AS5047_GetSpeed(int devidx, float angle_prev) {
 	float move = angle[devidx] - angle_prev;
 
 	//変化点を1023から0//へ移動したときの補正
-			if( move < -1*PI && angle_prev >PI){
+			if( move < -1.0f*PI && angle_prev >PI){
 //				printf("1023-0 %f-%f=%f\n",angle[devidx],angle_prev,move);
-				move += (2 * PI);
+				move += (2.0f * PI);
 			}
 			//変化点を0から1023へ移動したときの補正
-			else if(move > PI*1 && angle_prev<=PI){
+			else if(move > PI*1.0f && angle_prev<=PI){
 //				printf("0-1023 %f-%f=%f\n",angle[devidx],angle_prev,move);
-				move -= (2 * PI);
+				move -= (2.0f * PI);
 			}
 //
 //
@@ -173,7 +173,7 @@ float AS5047_GetSpeed(int devidx, float angle_prev) {
 //	if (direction == AS5047_ROTATE_REVERCE && move > 4) {
 //		move -= 2 * PI;
 //	}
-	return move * TIRE_DIAMETER/2;
+	return move * TIRE_DIAMETER/2.0f;
 }
 
 int8_t AS5047_GetDirection(int devidx, float angle_prev) {

@@ -22,7 +22,7 @@ typedef enum {
 
 extern ADC_HandleTypeDef hadc1;
 
-#define ADC_MAX (4095)
+#define ADC_MAX (4095.0f)
 
 void adc_dma_start(void);
 uint16_t get_adc(uint8_t channel);

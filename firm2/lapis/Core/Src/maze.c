@@ -75,6 +75,23 @@ void print_map(void) {
 		}
 		printf("\n");
 	}
+	printf("\n");
+		printf("    ");
+		for (int i = 0; i < MAP_X_MAX; i++) {
+			printf("  %d%d", i / 10, i % 10);
+		}
+		printf("\n");
+		for (int i = 0; i <= MAP_X_MAX; i++) {
+			printf("----");
+		}
+		printf("\n");
+		for (int i = MAP_Y_MAX - 1; i >= 0; i--) {
+			printf("%3d|", i);
+			for (int f = 0; f < MAP_X_MAX; f++) {
+				printf("%4x", map[f][i].check);
+			}
+			printf("\n");
+		}
 }
 /*
  * 説明：MAP情報初期化
@@ -93,6 +110,7 @@ void smap_Init(void) {
 		for (int f = 0; f < MAP_X_MAX; f++) {
 			map[f][i].step = 255;
 			map[f][i].wall = 0x00;
+			map[f][i].check = false;
 		}
 	}
 
@@ -147,36 +165,44 @@ void make_smap(uint16_t gx, uint16_t gy, uint8_t mode) {
 				/* ｓ北。 */
 				if (map_posY + 1 < MAP_Y_MAX) {
 					if ((map[map_posX][map_posY].wall & 0x88) == 0x80
-							&& map[map_posX][map_posY + 1].step == 255 &&(map[map_posX][map_posY+1].wall&0xf0)==0xf0) {
-						map[buf2[0][cnt2] = map_posX][buf2[1][cnt2] = map_posY + 1].step =
-								value;
+							&& map[map_posX][map_posY + 1].step == 255
+							&& (map[map_posX][map_posY + 1].wall & 0xf0)
+									== 0xf0) {
+						map[buf2[0][cnt2] = map_posX][buf2[1][cnt2] = map_posY
+								+ 1].step = value;
 						cnt2++;
 					}
 				}
 				/* ｓ東。 */
 				if (map_posX + 1 < MAP_X_MAX) {
 					if ((map[map_posX][map_posY].wall & 0x44) == 0x40
-							&& map[map_posX + 1][map_posY].step == 255&&(map[map_posX+1][map_posY].wall&0xf0)==0xf0) {
-						map[buf2[0][cnt2] = map_posX + 1][buf2[1][cnt2] = map_posY].step =
-								value;
+							&& map[map_posX + 1][map_posY].step == 255
+							&& (map[map_posX + 1][map_posY].wall & 0xf0)
+									== 0xf0) {
+						map[buf2[0][cnt2] = map_posX + 1][buf2[1][cnt2] =
+								map_posY].step = value;
 						cnt2++;
 					}
 				}
 				/* ｓ南。 */
 				if (map_posY != 0) {
 					if ((map[map_posX][map_posY].wall & 0x22) == 0x20
-							&& map[map_posX][map_posY - 1].step == 255&&(map[map_posX][map_posY-1].wall&0xf0)==0xf0) {
-						map[buf2[0][cnt2] = map_posX][buf2[1][cnt2] = map_posY - 1].step =
-								value;
+							&& map[map_posX][map_posY - 1].step == 255
+							&& (map[map_posX][map_posY - 1].wall & 0xf0)
+									== 0xf0) {
+						map[buf2[0][cnt2] = map_posX][buf2[1][cnt2] = map_posY
+								- 1].step = value;
 						cnt2++;
 					}
 				}
 				/* ｓ西。 */
 				if (map_posX != 0) {
 					if ((map[map_posX][map_posY].wall & 0x11) == 0x10
-							&& map[map_posX - 1][map_posY].step == 255&&(map[map_posX-1][map_posY].wall&0xf0)==0xf0) {
-						map[buf2[0][cnt2] = map_posX - 1][buf2[1][cnt2] = map_posY].step =
-								value;
+							&& map[map_posX - 1][map_posY].step == 255
+							&& (map[map_posX - 1][map_posY].wall & 0xf0)
+									== 0xf0) {
+						map[buf2[0][cnt2] = map_posX - 1][buf2[1][cnt2] =
+								map_posY].step = value;
 						cnt2++;
 					}
 				}
@@ -200,36 +226,44 @@ void make_smap(uint16_t gx, uint16_t gy, uint8_t mode) {
 				/* ｓ北。 */
 				if (map_posY + 1 < MAP_Y_MAX) {
 					if ((map[map_posX][map_posY].wall & 0x08) == 0x00
-							&& map[map_posX][map_posY + 1].step == 255&&(map[map_posX][map_posY+1].wall&0xf0)==0xf0) {
-						map[buf1[0][cnt1] = map_posX][buf1[1][cnt1] = map_posY + 1].step =
-								value;
+							&& map[map_posX][map_posY + 1].step == 255
+							&& (map[map_posX][map_posY + 1].wall & 0xf0)
+									== 0xf0) {
+						map[buf1[0][cnt1] = map_posX][buf1[1][cnt1] = map_posY
+								+ 1].step = value;
 						cnt1++;
 					}
 				}
 				/* ｓ東。 */
 				if (map_posX + 1 < MAP_X_MAX) {
 					if ((map[map_posX][map_posY].wall & 0x04) == 0x00
-							&& map[map_posX + 1][map_posY].step == 255&&(map[map_posX+1][map_posY].wall&0xf0)==0xf0) {
-						map[buf1[0][cnt1] = map_posX + 1][buf1[1][cnt1] = map_posY].step =
-								value;
+							&& map[map_posX + 1][map_posY].step == 255
+							&& (map[map_posX + 1][map_posY].wall & 0xf0)
+									== 0xf0) {
+						map[buf1[0][cnt1] = map_posX + 1][buf1[1][cnt1] =
+								map_posY].step = value;
 						cnt1++;
 					}
 				}
 				/* ｓ南。 */
 				if (map_posY != 0) {
 					if ((map[map_posX][map_posY].wall & 0x02) == 0x00
-							&& map[map_posX][map_posY - 1].step == 255&&(map[map_posX][map_posY-1].wall&0xf0)==0xf0) {
-						map[buf1[0][cnt1] = map_posX][buf1[1][cnt1] = map_posY - 1].step =
-								value;
+							&& map[map_posX][map_posY - 1].step == 255
+							&& (map[map_posX][map_posY - 1].wall & 0xf0)
+									== 0xf0) {
+						map[buf1[0][cnt1] = map_posX][buf1[1][cnt1] = map_posY
+								- 1].step = value;
 						cnt1++;
 					}
 				}
 				/* ｓ西。 */
 				if (map_posX != 0) {
 					if ((map[map_posX][map_posY].wall & 0x01) == 0x00
-							&& map[map_posX - 1][map_posY].step == 255&&(map[map_posX-1][map_posY].wall&0xf0)==0xf0) {
-						map[buf1[0][cnt1] = map_posX - 1][buf1[1][cnt1] = map_posY].step =
-								value;
+							&& map[map_posX - 1][map_posY].step == 255
+							&& (map[map_posX - 1][map_posY].wall & 0xf0)
+									== 0xf0) {
+						map[buf1[0][cnt1] = map_posX - 1][buf1[1][cnt1] =
+								map_posY].step = value;
 						cnt1++;
 					}
 				}
@@ -255,8 +289,8 @@ void make_smap(uint16_t gx, uint16_t gy, uint8_t mode) {
 				if (map_posY + 1 < MAP_Y_MAX) {
 					if ((map[map_posX][map_posY].wall & 0x08) == 0x00
 							&& map[map_posX][map_posY + 1].step == 255) {
-						map[buf2[0][cnt2] = map_posX][buf2[1][cnt2] = map_posY + 1].step =
-								value;
+						map[buf2[0][cnt2] = map_posX][buf2[1][cnt2] = map_posY
+								+ 1].step = value;
 						cnt2++;
 					}
 				}
@@ -264,8 +298,8 @@ void make_smap(uint16_t gx, uint16_t gy, uint8_t mode) {
 				if (map_posX + 1 < MAP_X_MAX) {
 					if ((map[map_posX][map_posY].wall & 0x04) == 0x00
 							&& map[map_posX + 1][map_posY].step == 255) {
-						map[buf2[0][cnt2] = map_posX + 1][buf2[1][cnt2] = map_posY].step =
-								value;
+						map[buf2[0][cnt2] = map_posX + 1][buf2[1][cnt2] =
+								map_posY].step = value;
 						cnt2++;
 					}
 				}
@@ -273,8 +307,8 @@ void make_smap(uint16_t gx, uint16_t gy, uint8_t mode) {
 				if (map_posY != 0) {
 					if ((map[map_posX][map_posY].wall & 0x02) == 0x00
 							&& map[map_posX][map_posY - 1].step == 255) {
-						map[buf2[0][cnt2] = map_posX][buf2[1][cnt2] = map_posY - 1].step =
-								value;
+						map[buf2[0][cnt2] = map_posX][buf2[1][cnt2] = map_posY
+								- 1].step = value;
 						cnt2++;
 					}
 				}
@@ -282,8 +316,8 @@ void make_smap(uint16_t gx, uint16_t gy, uint8_t mode) {
 				if (map_posX != 0) {
 					if ((map[map_posX][map_posY].wall & 0x01) == 0x00
 							&& map[map_posX - 1][map_posY].step == 255) {
-						map[buf2[0][cnt2] = map_posX - 1][buf2[1][cnt2] = map_posY].step =
-								value;
+						map[buf2[0][cnt2] = map_posX - 1][buf2[1][cnt2] =
+								map_posY].step = value;
 						cnt2++;
 					}
 				}
@@ -308,8 +342,8 @@ void make_smap(uint16_t gx, uint16_t gy, uint8_t mode) {
 				if (map_posY + 1 < MAP_Y_MAX) {
 					if ((map[map_posX][map_posY].wall & 0x08) == 0x00
 							&& map[map_posX][map_posY + 1].step == 255) {
-						map[buf1[0][cnt1] = map_posX][buf1[1][cnt1] = map_posY + 1].step =
-								value;
+						map[buf1[0][cnt1] = map_posX][buf1[1][cnt1] = map_posY
+								+ 1].step = value;
 						cnt1++;
 					}
 				}
@@ -317,8 +351,8 @@ void make_smap(uint16_t gx, uint16_t gy, uint8_t mode) {
 				if (map_posX + 1 < MAP_X_MAX) {
 					if ((map[map_posX][map_posY].wall & 0x04) == 0x00
 							&& map[map_posX + 1][map_posY].step == 255) {
-						map[buf1[0][cnt1] = map_posX + 1][buf1[1][cnt1] = map_posY].step =
-								value;
+						map[buf1[0][cnt1] = map_posX + 1][buf1[1][cnt1] =
+								map_posY].step = value;
 						cnt1++;
 					}
 				}
@@ -326,8 +360,8 @@ void make_smap(uint16_t gx, uint16_t gy, uint8_t mode) {
 				if (map_posY != 0) {
 					if ((map[map_posX][map_posY].wall & 0x02) == 0x00
 							&& map[map_posX][map_posY - 1].step == 255) {
-						map[buf1[0][cnt1] = map_posX][buf1[1][cnt1] = map_posY - 1].step =
-								value;
+						map[buf1[0][cnt1] = map_posX][buf1[1][cnt1] = map_posY
+								- 1].step = value;
 						cnt1++;
 					}
 				}
@@ -335,8 +369,8 @@ void make_smap(uint16_t gx, uint16_t gy, uint8_t mode) {
 				if (map_posX != 0) {
 					if ((map[map_posX][map_posY].wall & 0x01) == 0x00
 							&& map[map_posX - 1][map_posY].step == 255) {
-						map[buf1[0][cnt1] = map_posX - 1][buf1[1][cnt1] = map_posY].step =
-								value;
+						map[buf1[0][cnt1] = map_posX - 1][buf1[1][cnt1] =
+								map_posY].step = value;
 						cnt1++;
 					}
 				}
@@ -354,6 +388,125 @@ void make_smap(uint16_t gx, uint16_t gy, uint8_t mode) {
 	//printf("make fin\n");
 }
 
+t_bool get_unknow_block(uint16_t *x, uint16_t *y) {
+	*x = map_posX;
+	*y = map_posY;
+	int i = 0, f = 0;
+	int finish = 0;
+	for (int i = 0; i < MAP_X_MAX; i++) {
+		for (int f = 0; f < MAP_Y_MAX; f++) {
+			if ((map[i][f].wall & 0xf0) == 0xf0) {
+				map[i][f].check = true;
+			}
+		}
+	}
+	make_smap(0,0,0);
+	for (i = 0; i < MAP_X_MAX; i++) {
+		for (f = 0; f < MAP_Y_MAX; f++) {
+
+			*x = map_posX + i;
+
+			if ((*x >= 0 && *x < MAP_X_MAX) && (*y >= 0 && *y < MAP_Y_MAX)) {
+
+				if (map[*x][*y].check == false) {
+//					printf("%d,%d\n",*x,*y);
+					map[*x][*y].check = true;
+					if (map[*x][*y].step != 255) {
+						make_smap(*x, *y, 0);
+						if (map[map_posX][map_posY].step != 255) {
+							finish = 1;
+							break;
+						}
+					}
+				}
+			}
+			*y = map_posY + f;
+			if ((*x >= 0 && *x < MAP_X_MAX) && (*y >= 0 && *y < MAP_Y_MAX)) {
+
+				if (map[*x][*y].check == false) {
+//					printf("%d,%d\n",*x,*y);
+					map[*x][*y].check = true;
+					if (map[*x][*y].step != 255) {
+						make_smap(*x, *y, 0);
+						if (map[map_posX][map_posY].step != 255) {
+							finish = 1;
+							break;
+						}
+					}
+				}
+			}
+			*y = map_posY - f;
+			if ((*x >= 0 && *x < MAP_X_MAX) && (*y >= 0 && *y < MAP_Y_MAX)) {
+
+				if (map[*x][*y].check == false) {
+//					printf("%d,%d\n",*x,*y);
+					map[*x][*y].check = true;
+					if (map[*x][*y].step != 255) {
+						make_smap(*x, *y, 0);
+						if (map[map_posX][map_posY].step != 255) {
+							finish = 1;
+							break;
+						}
+					}
+				}
+			}
+			*x = map_posX - i;
+			if ((*x >= 0 && *x < MAP_X_MAX) && (*y >= 0 && *y < MAP_Y_MAX)) {
+
+				if (map[*x][*y].check == false) {
+//					printf("%d,%d\n",*x,*y);
+					map[*x][*y].check = true;
+					if (map[*x][*y].step != 255) {
+						make_smap(*x, *y, 0);
+						if (map[map_posX][map_posY].step != 255) {
+							finish = 1;
+							break;
+						}
+					}
+				}
+			}
+			*y = map_posY + f;
+			if ((*x >= 0 && *x < MAP_X_MAX) && (*y >= 0 && *y < MAP_Y_MAX)) {
+
+				if (map[*x][*y].check == false) {
+//					printf("%d,%d\n",*x,*y);
+					map[*x][*y].check = true;
+					if (map[*x][*y].step != 255) {
+						make_smap(*x, *y, 0);
+						if (map[map_posX][map_posY].step != 255) {
+							finish = 1;
+							break;
+						}
+					}
+				}
+			}
+			*y = map_posY - f;
+			if ((*x >= 0 && *x < MAP_X_MAX) && (*y >= 0 && *y < MAP_Y_MAX)) {
+
+				if (map[*x][*y].check == false) {
+//					printf("%d,%d\n",*x,*y);
+					map[*x][*y].check = true;
+					if (map[*x][*y].step != 255) {
+						make_smap(*x, *y, 0);
+						if (map[map_posX][map_posY].step != 255) {
+							finish = 1;
+							break;
+						}
+					}
+				}
+			}
+		}
+		if (finish) {
+			break;
+		}
+	}
+	if (finish) {
+		return true;
+	}
+	return false;
+
+}
+
 /*
  * 説明：指定方向の壁の有無確認・壁情報更新
  * 引数：mode 0x01:前　0x02:左右　0x03:前左右
@@ -365,8 +518,7 @@ void wall_set(uint8_t mode) {
 	uint8_t wall_info = 0;
 
 	if ((mode & 0x01) == 0x01) {
-		if (get_sensor_iswall(LF)
-				&& get_sensor_iswall(RF)) {
+		if (get_sensor_iswall(LF) && get_sensor_iswall(RF)) {
 			wall_info += 0x88;
 		}
 	}
@@ -392,7 +544,7 @@ void wall_set(uint8_t mode) {
 
 	map[map_posX][map_posY].wall |= wall_info;
 
-	LED(map[map_posX][map_posY].wall & 0x0f);
+//	LED(map[map_posX][map_posY].wall & 0x0f);
 }
 
 /*
@@ -502,8 +654,8 @@ uint8_t wall_check(uint8_t direction) {
 		}
 		break;
 	}
-	printf("and:%4x,wall:%4x,wall_check:%4x\n", and, map[map_posX][map_posY].wall,
-			map[map_posX][map_posY].wall & and);
+	printf("and:%4x,wall:%4x,wall_check:%4x\n", and,
+			map[map_posX][map_posY].wall, map[map_posX][map_posY].wall & and);
 	return (map[map_posX][map_posY].wall & and) % 0x10;
 }
 
@@ -521,22 +673,26 @@ int16_t step_check(uint16_t map_posX, uint16_t map_posY, uint8_t direction) {
 		switch (head) {
 		case 0:
 			if (map_posY + 1 < MAP_Y_MAX) {
-				step = map[map_posX][map_posY + 1].step - map[map_posX][map_posY].step;
+				step = map[map_posX][map_posY + 1].step
+						- map[map_posX][map_posY].step;
 			}
 			break;
 		case 1:
 			if (map_posX + 1 < MAP_X_MAX) {
-				step = map[map_posX + 1][map_posY].step - map[map_posX][map_posY].step;
+				step = map[map_posX + 1][map_posY].step
+						- map[map_posX][map_posY].step;
 			}
 			break;
 		case 2:
 			if (map_posY > 0) {
-				step = map[map_posX][map_posY - 1].step - map[map_posX][map_posY].step;
+				step = map[map_posX][map_posY - 1].step
+						- map[map_posX][map_posY].step;
 			}
 			break;
 		case 3:
 			if (map_posX > 0) {
-				step = map[map_posX + 1][map_posY].step - map[map_posX][map_posY].step;
+				step = map[map_posX + 1][map_posY].step
+						- map[map_posX][map_posY].step;
 			}
 			break;
 		}
@@ -545,22 +701,26 @@ int16_t step_check(uint16_t map_posX, uint16_t map_posY, uint8_t direction) {
 		switch (head) {
 		case 0:
 			if (map_posX > 0) {
-				step = map[map_posX][map_posY].step - map[map_posX - 1][map_posY].step;
+				step = map[map_posX][map_posY].step
+						- map[map_posX - 1][map_posY].step;
 			}
 			break;
 		case 1:
 			if (map_posY + 1 < MAP_Y_MAX) {
-				step = map[map_posX][map_posY].step - map[map_posX][map_posY + 1].step;
+				step = map[map_posX][map_posY].step
+						- map[map_posX][map_posY + 1].step;
 			}
 			break;
 		case 2:
 			if (map_posX + 1 < MAP_X_MAX) {
-				step = map[map_posX][map_posY].step - map[map_posX + 1][map_posY].step;
+				step = map[map_posX][map_posY].step
+						- map[map_posX + 1][map_posY].step;
 			}
 			break;
 		case 3:
 			if (map_posY > 0) {
-				step = map[map_posX][map_posY].step - map[map_posX][map_posY - 1].step;
+				step = map[map_posX][map_posY].step
+						- map[map_posX][map_posY - 1].step;
 			}
 			break;
 		}
@@ -569,22 +729,26 @@ int16_t step_check(uint16_t map_posX, uint16_t map_posY, uint8_t direction) {
 		switch (head) {
 		case 0:
 			if (map_posX + 1 < MAP_X_MAX) {
-				step = map[map_posX][map_posY].step - map[map_posX + 1][map_posY].step;
+				step = map[map_posX][map_posY].step
+						- map[map_posX + 1][map_posY].step;
 			}
 			break;
 		case 1:
 			if (map_posY > 0) {
-				step = map[map_posX][map_posY].step - map[map_posX][map_posY - 1].step;
+				step = map[map_posX][map_posY].step
+						- map[map_posX][map_posY - 1].step;
 			}
 			break;
 		case 2:
 			if (map_posX > 0) {
-				step = map[map_posX][map_posY].step - map[map_posX - 1][map_posY].step;
+				step = map[map_posX][map_posY].step
+						- map[map_posX - 1][map_posY].step;
 			}
 			break;
 		case 3:
 			if (map_posY + 1 < MAP_Y_MAX) {
-				step = map[map_posX][map_posY].step - map[map_posX][map_posY + 1].step;
+				step = map[map_posX][map_posY].step
+						- map[map_posX][map_posY + 1].step;
 			}
 			break;
 		}

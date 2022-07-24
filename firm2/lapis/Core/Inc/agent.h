@@ -24,5 +24,5 @@ void adachi_s(RUNConfig run_config, TURNConfig turn_config,float adjust_length, 
 		uint16_t gy);
 void saitan_s(RUNConfig run_config, TURNConfig turn_config,float adjust_length, uint16_t gx,
 		uint16_t gy, uint16_t sx, uint16_t sy, int8_t shead);
-
+void sarch_all(RUNConfig run_config, TURNConfig turn_config,float adjust_length);
 #endif /* INC_AGENT_H_ */

@@ -50,14 +50,14 @@ void run(float acc, float max_speed, float finish_speed) {
 
 void straight(RUNConfig config) {
 	tar_ang = 0;
-	ang_p = 0;
-	ang_i = 0;
-	ang_d = 0;
+	//ang_p = 0;
+	//ang_i = 0;
+	//ang_d = 0;
 	ang_p_prev = 0;
-	speed_p = 0;
-	speed_p_prev = 0;
-	speed_i = 0;
-	speed_d = 0;
+	//speed_p = 0;
+	//speed_p_prev = 0;
+	//speed_i = 0;
+	//speed_d = 0;
 	tar_degree = 0;
 	tar_accel = config.acceleration;
 	max_tar_speed = config.max_speed;
@@ -67,30 +67,30 @@ void straight(RUNConfig config) {
 	}
 	run_mode = STRAIGHT_MODE;
 	con_wall.enable = true;
-	while (((config.tar_length) - lapis_length - 40)
+	while (((config.tar_length) - lapis_length - 20)
 			> 1000.0f * (tar_speed - config.finish_speed)
 					* ((tar_speed - config.finish_speed) / config.acceleration)
 					/ 2.0f) {
 //		printf("p\n");
 	}
-	tar_accel = config.acceleration * -1;
+	tar_accel = config.acceleration * -1.0f;
 	while (lapis_length < config.tar_length) {
 //		printf("%f\n",lapis_length);
 		if (tar_speed < config.min_speed) {
-			tar_accel = 0;
+			tar_accel = 0.0f;
 			tar_speed = config.min_speed;
 		}
 		if (tar_speed < config.finish_speed) {
-			tar_accel = 0;
+			tar_accel = 0.0f;
 			tar_speed = config.finish_speed;
 		}
 	}
-	tar_accel = 0;
+	tar_accel = 0.0f;
 	tar_speed = config.finish_speed;
-	speed_p = 0;
-	speed_p_prev = 0;
-	speed_i = 0;
-	speed_d = 0;
+	//speed_p = 0;
+	//speed_p_prev = 0;
+	//speed_i = 0;
+	//speed_d = 0;
 	lapis_length = 0;
 	con_wall.enable = false;
 }
@@ -107,12 +107,13 @@ void turn(TURNConfig config) {
 	speed_d = 0;
 	tar_accel = 0;
 	max_tar_speed = 0;
+	degree=0;
 	tar_speed = config.speed;
 	max_tar_ang = 0;
 	float local_degree = 0;
 
 	//車体の現在角度を取得
-	local_degree = degree;
+	local_degree = (degree/90) * degree + (degree/90);
 	tar_degree = 0;
 //	printf("local=%f,tar_deg=%f\n", local_degree, tar_degree);
 	run_mode = TURN_MODE;
@@ -122,9 +123,8 @@ void turn(TURNConfig config) {
 		max_tar_ang = config.max_gyro;
 		//走行モードをスラロームモードにする
 		max_degree = config.tar_deg;
-		while ((float) (max_degree - (float) (degree - local_degree))
-				* (float) (PI / 180.0f)
-				> ((float) (tar_ang * tar_ang) / (float) (2.0f * ang_accel))) {
+		while(((float)(max_degree - (float)(degree - local_degree))* (float) (PI / 180.0f))
+					> (ang * (ang/ang_accel) / 2.0f)){
 		}
 	} else {
 		//角加速度、加速度、最高角速度設定
@@ -132,10 +132,14 @@ void turn(TURNConfig config) {
 		max_tar_ang = config.max_gyro * -1.0f;
 		//走行モードをスラロームモードにする
 		max_degree = config.tar_deg * -1.0f;
-		while (-1.0f * (max_degree - (degree - local_degree))
-				* (float) (PI / 180.0f)
-				> (float) ((tar_ang * tar_ang) / (float) (-2.0f * ang_accel))) {
-		}
+//		while (-1.0f * (float)(max_degree - 3.0f- (float)(degree - local_degree))
+//				* (float) (PI / 180.0f)
+//				> (float) ((tar_ang * tar_ang) / (float) (-2.0f * ang_accel))) {
+//		}
+		while(((float)(max_degree - (float)(degree - local_degree))* (float) (PI / 180.0f))
+			< (ang * (ang/ang_accel) / 2.0f)){
+//			printf("%3.3f,%3.3f\n",((float)(max_degree - (float)(degree - local_degree))* (float) (PI / 180.0f)),tar_ang * (tar_ang/ang_accel) / 2.0f);
+			}
 	}
 
 	ang_i = 0;
@@ -210,10 +214,10 @@ void front_adjust(void) {
 	while (true) {
 		if ((now_pos - target_pos) < -10) {
 			//中央より前壁より離れている場合前進
-			tar_accel = 0.2;
+			tar_accel = 0.2f;
 		} else if ((now_pos - target_pos) > 10) {
 			//中央より前壁に近い場合後退
-			tar_accel = -0.2;
+			tar_accel = -0.2f;
 		} else {
 			//加速度を0にする
 			tar_accel = 0;
@@ -224,12 +228,18 @@ void front_adjust(void) {
 		}
 		now_pos = get_sensordata(RF) + get_sensordata(LF);
 	}
+	while (ang >= 0.1f || ang <= -0.1f)
+		;
 	tar_ang = 0;
 	ang_accel = 0;
 	//現在距離を0にリセット
 	lapis_length = 0;
-	while (ang >= 0.1f || ang <= -0.1f);
-	Delay_ms(100);
+	ang_p = 0;
+	ang_i = 0;
+	ang_d = 0;
+	ang_p_prev = 0;
+	run_mode = NON_MODE;
+//	Delay_ms(100);
 }
 
 void turn_u(void) {
@@ -237,7 +247,7 @@ void turn_u(void) {
 	int8_t f_adjust = false, r_adjust = false, l_adjust = false;
 
 	TURNConfig turn_config =
-			{ 90, 20.0f * PI, PI / 10, 3.0f * PI, 0, TURN_RIGHT };
+			{ 90, 20.0f * PI, PI / 5, 3.0f * PI, 0, TURN_RIGHT };
 
 	//自分の方向に応じて書き込むデータを生成
 	//CONV_SEN2WALL()はmacro.hを参照
@@ -261,7 +271,9 @@ void turn_u(void) {
 			turn_config.tar_deg = 90;
 			turn(turn_config);
 			front_adjust();
+//			music();
 			turn(turn_config);
+//			music();
 		} else if (l_adjust == true) {
 			turn_config.dir = TURN_LEFT;
 			turn_config.tar_deg = 90;
@@ -278,6 +290,8 @@ void turn_u(void) {
 		turn_config.tar_deg = 180;
 		turn(turn_config);				//180ターン
 	}
-	chenge_head(TURN_RIGHT,180,&head);
-	lapis_length=0;
+	chenge_head(TURN_RIGHT, 180, &head);
+	lapis_length = 0;
+	degree = 0;
+	run_mode = NON_MODE;
 }

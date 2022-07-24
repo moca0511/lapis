@@ -14,13 +14,13 @@
 float readBattery(void) {
 	/* USER CODE BEGIN BatteryCheck */
 	/* Infinite loop */
-	float batt_level = 0;
+	float batt_level = BATT_HIGH;
 //	static int8_t count = 0;
-	static float batt_level_prev = BATT_NORMAL;
+	static float batt_level_prev = BATT_HIGH;
 //	char buf[100];
 	batt_level = get_adc(BATT) * 2.0f;
 	batt_level = (batt_level / (ADC_MAX / 3.3f));
-	batt_level = (batt_level + batt_level_prev) / 2;
+	batt_level = batt_level_prev + (batt_level - batt_level_prev) / 10.0f;
 
 	return batt_level;
 }

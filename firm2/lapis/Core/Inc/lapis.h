@@ -9,10 +9,16 @@
 #define INC_LAPIS_H_
 #include"main.h"
 //　機体パラメータ
-#define TIRE_DIAMETER   (14.2f)					//　タイヤの直径　52mm
+#define TIRE_DIAMETER   (14.3f)					//　タイヤの直径　52mm
 #define TIRE_CIRCUIT    (PI * TIRE_DIAMETER)	//　タイヤの円周 163.363mm
 #define TREAD_WIDTH     (38.0f)					//　トレッド幅　87.0mm(再計測)
 #define LAPIS_LENGTH (45.0f)
+#define LAPIS_M (0.012f)	//車体質量
+#define GEAR_N (4.0f)	//ギア比
+#define K_T (0.594f)	//モータトルク定数
+#define K_E (0.062f)	//モータトルク定数
+#define MOTOR_REG (6.7f)	//モータ巻き線抵抗
+#define V_RETURN (0.062f)	//モータ逆起電圧定数
 //#define TREAD_CIRCUIT   (TREAD_WIDTH * PI)		//360度旋回時にタイヤが動く距離　87*3.14mm 273.18mm
 //#define	STEP_DEGREE  (360.0 / 16383.0)				//　ステッピングモータ1-2相励ステップ角（度/step) 0.9°
 //#define	STEP_LENGTH	(TIRE_CIRCUIT * STEP_DEGREE / 360.0)	//1ステップで進む距離　0.408mm
@@ -55,14 +61,14 @@ typedef struct
 //　最大速度
 #define MAX_SPEED (3.0f)
 #define MIN_SPEED (0.1f)
-#define SPEED_KP (6.5f)
-#define SPEED_KI (0.1f)
+#define SPEED_KP (0.8f)
+#define SPEED_KI (0.001f)
 #define SPEED_KD (0.5f)
-#define ANG_KP (0.28f)
+#define ANG_KP (0.3f)
 #define ANG_KI (0.0025f)
 #define ANG_KD (0.01f)
 #define CON_WALL_KP (0.0003f)
-#define CON_FWALL_KP (0.003f)
+#define CON_FWALL_KP (0.006f)
 
 //typedef enum {
 //	RS_WALL,
